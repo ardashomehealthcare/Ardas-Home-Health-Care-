@@ -1,6 +1,6 @@
 repository/
 ├── index.html
-└── images/
+└── /images/
     ├── logo.png
     ├── hero-elderly-care-bathinda.jpg
     ├── elderly-care-bathinda.jpg
