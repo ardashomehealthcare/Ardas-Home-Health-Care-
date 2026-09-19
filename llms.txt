@@ -11,6 +11,8 @@
 - [Babysitter Services at Home in Bathinda](https://www.ardashomehealthcare.com/babysitter-services-bathinda.html): ARDAS provides trained, background-verified babysitters in Bathinda for newborns, infants and toddlers — attentive feeding, hygiene, safe play and sleep-time care in your own home, on part-time, full-time or night schedules.
 - [Lab Test Facility at Home in Bathinda](https://www.ardashomehealthcare.com/lab-test-at-home-bathinda.html): Skip the queue at the lab. ARDAS arranges lab test sample collection at your home in Bathinda — a trained phlebotomist visits your doorstep, collects the sample safely, and digital reports are shared with you on time.
 
+- [Caretaker Jobs in Bathinda — Join as Caretaker / Attendant / Babysitter](https://www.ardashomehealthcare.com/caretaker-jobs-bathinda.html): ARDAS is hiring caretakers, patient attendants and babysitters in Bathinda for day, night & 24-hr live-in duties. Verified families, flexible shifts near your area, coordinator support, no fee. Apply in 2 mins via the official Application Form at https://ardashomehealthcare.github.io/Application-Form-/ (source on https://github.com/ardashomehealthcare/Application-Form-). Required: full name, phone, WhatsApp, address, gender, qualification certificate, Aadhaar front & rear (PDF/JPG/PNG ≤5MB), duty preference.
+
 ## Service area
 Bathinda city: Model Town, Ajit Road, Mall Road, Civil Lines, Power House Road, Thermal Colony, Bibi Wala Road, Amrik Singh Road, Guru Ki Nagri, Ganesha Basti and nearby colonies. Nearby towns: Rampura Phul, Maur Mandi, Talwandi Sabo, Nathana, Sangat, Bhucho Mandi, Goniana.
 
@@ -21,6 +23,7 @@ Bathinda city: Model Town, Ajit Road, Mall Road, Civil Lines, Power House Road, 
 - Pricing depends on service type, shift, patient condition and duration; transparent quotes are shared before service begins (rates on request by phone/WhatsApp).
 - Payments accepted: cash, UPI, bank transfer. Languages: English, Hindi, Punjabi.
 - Replacement support if the assigned professional is not a good fit.
+- Hiring: ARDAS is actively hiring caretakers / attendants / babysitters in Bathinda (day/night/24hrs). Apply free at https://ardashomehealthcare.github.io/Application-Form-/ (GitHub: https://github.com/ardashomehealthcare/Application-Form-) or via https://www.ardashomehealthcare.com/caretaker-jobs-bathinda.html
 
 ## Frequently asked questions
 Q: Does ARDAS provide home healthcare services in Bathinda?
@@ -53,6 +56,9 @@ A: ARDAS accepts cash, UPI and bank transfer. Payment terms are shared clearly b
 Q: Are ARDAS caregivers verified?
 A: ARDAS caregivers undergo identity and background verification, medical fitness checks, training and ongoing supervision before and after deployment.
 
+Q: Is ARDAS hiring caretakers in Bathinda?
+A: Yes. ARDAS is hiring caretakers, patient attendants and babysitters for day, night & 24-hr duties. Apply free in 2 mins at https://ardashomehealthcare.github.io/Application-Form-/ (or via https://www.ardashomehealthcare.com/caretaker-jobs-bathinda.html). GitHub source: https://github.com/ardashomehealthcare/Application-Form-
+
 ## Links
 - Home: https://www.ardashomehealthcare.com/
 - Elderly Care at Home in Bathinda: https://www.ardashomehealthcare.com/elderly-care-bathinda.html
@@ -62,3 +68,6 @@ A: ARDAS caregivers undergo identity and background verification, medical fitnes
 - Physiotherapy at Home in Bathinda: https://www.ardashomehealthcare.com/physiotherapy-bathinda.html
 - Babysitter Services at Home in Bathinda: https://www.ardashomehealthcare.com/babysitter-services-bathinda.html
 - Lab Test Facility at Home in Bathinda: https://www.ardashomehealthcare.com/lab-test-at-home-bathinda.html
+- Caretaker Jobs in Bathinda: https://www.ardashomehealthcare.com/caretaker-jobs-bathinda.html
+- Direct Application Form (for job seekers): https://ardashomehealthcare.github.io/Application-Form-/
+- Application Form Source on GitHub: https://github.com/ardashomehealthcare/Application-Form-
