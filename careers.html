@@ -725,6 +725,7 @@
     });
   }
 
+  // Legacy panel kept for fallback but hidden - new flow uses thank-you.html redirect
   const waPanel = document.getElementById('waPanel');
   const waLink = document.getElementById('waLink');
 
@@ -744,7 +745,7 @@
     btn.disabled = true;
     progressTrack.classList.add('show');
     setProgress(0, 'Preparing documents...');
-    waPanel.classList.remove('show');
+    if(waPanel) waPanel.classList.remove('show');
 
     try {
       const files = [
@@ -759,9 +760,11 @@
       }
 
       const gender = document.querySelector('input[name="gender"]:checked').value;
+      const fullnameVal = document.getElementById('fullname').value.trim();
 
+      // === PAYLOAD UNCHANGED - Apps Script not affected ===
       const payload = {
-        fullname: document.getElementById('fullname').value.trim(),
+        fullname: fullnameVal,
         phone: document.getElementById('phone').value.trim(),
         whatsapp: document.getElementById('whatsapp').value.trim(),
         address: document.getElementById('address').value.trim(),
@@ -777,31 +780,38 @@
 
       await uploadWithProgress(SCRIPT_URL, JSON.stringify(payload));
 
-      setProgress(100, 'Done!');
-      showToast('Application submitted successfully! Join WhatsApp group below.', false);
+      setProgress(100, 'Done! Redirecting...');
 
-      // Reveal WhatsApp group link matching gender selection
-      waLink.href = WHATSAPP_LINKS[gender];
-      waLink.textContent = 'Join ' + gender + ' WhatsApp Duty Group →';
-      waPanel.classList.add('show');
-      waPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Store for thank-you and join-group pages
+      try {
+        sessionStorage.setItem('ardas_gender', gender);
+        sessionStorage.setItem('ardas_name', fullnameVal);
+        // Fire lead event before redirect (GA4 + Google Ads page-view will also count)
+        gtag('event', 'generate_lead', { method: 'Careers Form', gender: gender });
+      } catch(err){}
 
-      // Step 5 active
+      showToast('Application submitted! Redirecting to confirmation...', false);
+
+      // Mark step 5 active visually before redirect
       document.querySelectorAll('.step').forEach(step => {
         step.classList.add('done');
         if (step.getAttribute('data-step') === '5') step.classList.add('active');
       });
 
+      // === NEW FLOW: Redirect to separate thank-you URL for Google Ads tracking ===
+      // This URL can be used as Page-Load Conversion in Google Ads
+      const thankYouUrl = 'thank-you.html?gender=' + encodeURIComponent(gender) + '&name=' + encodeURIComponent(fullnameVal);
+      
       setTimeout(() => {
-        showToast('Tap to join WhatsApp Group for job updates', false, WHATSAPP_LINKS[gender]);
-      }, 3500);
+        window.location.href = thankYouUrl;
+      }, 600);
 
-      form.reset();
-      document.querySelectorAll('.file-name').forEach(el => el.style.display = 'none');
-      document.querySelectorAll('.field.invalid').forEach(el => el.classList.remove('invalid'));
+      // Do not reset form here - thank-you page will handle next step
+      return;
+
     } catch (error) {
+      console.error('Submit error', error);
       showToast('Submission error. Please check your connection and try again.', true);
-    } finally {
       spinner.style.display = 'none';
       label.textContent = 'Submit Job Application';
       btn.disabled = false;
