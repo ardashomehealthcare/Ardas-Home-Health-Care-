@@ -118,6 +118,19 @@
     .btn-brand:hover{background:#702421}
     .btn-wa{background:var(--green);color:#fff}
     .btn-ghost{border:2px solid var(--brand);color:var(--brand);background:transparent}
+    .btn-caretaker{background:var(--brand2);color:#fff}
+    .btn-caretaker:hover{background:#964320}
+
+    /* Rules Card (GDA / Caretaker Duty Guidelines) */
+    .rules-card{background:var(--card);border:2px solid #d97706;border-radius:16px;padding:22px 24px;margin-bottom:28px;box-shadow:0 6px 20px rgba(217,119,6,.08)}
+    .rules-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;border-bottom:1px solid #fde68a;padding-bottom:14px}
+    .rules-icon{font-size:2rem;line-height:1}
+    .rules-head h3{font-size:1.18rem;color:var(--brand);margin:0 0 4px;line-height:1.3}
+    .rules-head p{font-size:.85rem;color:var(--muted);margin:0}
+    .rules-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:rules}
+    .rules-list li{position:relative;padding-left:34px;font-size:.92rem;line-height:1.6;color:var(--ink)}
+    .rules-list li::before{counter-increment:rules;content:counter(rules);position:absolute;left:0;top:2px;width:24px;height:24px;background:#fef3c7;border:1.5px solid #d97706;color:#92400e;font-weight:800;font-size:12px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .rules-list li strong{display:block;color:var(--brand);margin-bottom:2px}
     .hero{padding:48px 0 32px}
     .crumbs{font-size:.85rem;color:var(--muted);margin-bottom:14px}
     .crumbs a{color:var(--brand);text-decoration:none;font-weight:600}
@@ -244,6 +257,7 @@
     <div class="cta-row">
       <a class="btn btn-ghost" href="tel:+919877062683">+91 98770 62683</a>
       <a class="btn btn-wa" href="https://wa.me/919877062683?text=Hello%20ARDAS%20Home%20Health%20Care%2C%20I%20need%20information%20about%20your%20services" rel="noopener">Book a Caregiver</a>
+      <a class="btn btn-caretaker" href="#applicationForm">Apply for Caretaker Job</a>
     </div>
   </div>
 </header>
@@ -282,6 +296,51 @@
   <section class="alt" style="padding-top:36px;">
     <div class="wrap">
       <div class="form-shell">
+
+        <!-- Caretaker & GDA Duty Instructions (Punjabi) -->
+        <div class="rules-card">
+          <div class="rules-head">
+            <span class="rules-icon">📋</span>
+            <div>
+              <h3>ਕੇਅਰਟੇਕਰ ਅਤੇ ਜੀ.ਡੀ.ਏ. (GDA) ਸਟਾਫ਼ ਲਈ ਡਿਊਟੀ ਦੀਆਂ ਜ਼ਰੂਰੀ ਹਦਾਇਤਾਂ</h3>
+              <p>Staff Duty Rules & Guidelines — ਕਿਰਪਾ ਕਰਕੇ ਅਰਜ਼ੀ ਦੇਣ ਤੋਂ ਪਹਿਲਾਂ ਧਿਆਨ ਨਾਲ ਪੜ੍ਹੋ:</p>
+            </div>
+          </div>
+          <ol class="rules-list">
+            <li>
+              <strong>1. ਸਮੇਂ ਦੀ ਪਾਬੰਦੀ (Reach Always on Time):</strong>
+              ਆਪਣੀ ਡਿਊਟੀ ਦੇ ਨਿਰਧਾਰਤ ਸਮੇਂ ਤੋਂ ਹਮੇਸ਼ਾ 10 ਤੋਂ 15 ਮਿੰਟ ਪਹਿਲਾਂ ਮਰੀਜ਼ ਦੇ ਘਰ ਪਹੁੰਚੋ। ਕਦੇ ਵੀ ਲੇਟ ਨਾ ਹੋਵੋ। ਜੇਕਰ ਕਿਸੇ ਐਮਰਜੈਂਸੀ ਕਾਰਨ ਦੇਰੀ ਹੁੰਦੀ ਹੈ ਤਾਂ ਪਹਿਲਾਂ ਹੀ ARDAS ਕੋਆਰਡੀਨੇਟਰ ਨੂੰ ਸੂਚਿਤ ਕਰੋ।
+            </li>
+            <li>
+              <strong>2. ਡਿਊਟੀ ਦੌਰਾਨ ਹਮੇਸ਼ਾ ਹਾਜ਼ਰ ਤੇ ਚੌਕਸ ਰਹੋ (Always Present on Duty):</strong>
+              ਮਰੀਜ਼ ਨੂੰ ਕਦੇ ਵੀ ਇਕੱਲਾ ਜਾਂ ਬਿਨਾਂ ਨਿਗਰਾਨੀ ਨਾ ਛੱਡੋ। ਡਿਊਟੀ ਸਮੇਂ ਦੌਰਾਨ ਸੌਣਾ ਜਾਂ ਬਿਨਾਂ ਇਜਾਜ਼ਤ ਬਾਹਰ ਜਾਣਾ ਸਖ਼ਤ ਮਨ੍ਹਾ ਹੈ।
+            </li>
+            <li>
+              <strong>3. ਡਾਇਪਰ ਬਦਲਣ ਅਤੇ ਸਫ਼ਾਈ ਦੇ ਨਿਯਮ (How to Handle Diaper & Hygiene):</strong>
+              ਹਰ 3–4 ਘੰਟੇ ਬਾਅਦ ਜਾਂ ਲੋੜ ਪੈਣ 'ਤੇ ਡਾਇਪਰ ਚੈੱਕ ਕਰੋ। ਡਾਇਪਰ ਬਦਲਣ ਤੋਂ ਪਹਿਲਾਂ ਅਤੇ ਬਾਅਦ ਵਿੱਚ ਹੱਥ ਚੰਗੀ ਤਰ੍ਹਾਂ ਸਾਬਣ ਨਾਲ ਸਾਫ਼ ਕਰੋ। ਮਰੀਜ਼ ਦੀ ਚੰਗੀ ਤਰ੍ਹਾਂ ਸਫ਼ਾਈ ਕਰੋ ਤਾਂ ਜੋ ਰੈਸ਼ੇਜ਼ ਜਾਂ ਇਨਫੈਕਸ਼ਨ ਨਾ ਹੋਵੇ। ਵਰਤਿਆ ਹੋਇਆ ਡਾਇਪਰ ਲਿਫ਼ਾਫ਼ੇ ਵਿੱਚ ਚੰਗੀ ਤਰ੍ਹਾਂ ਲਪੇਟ ਕੇ ਹੀ ਡਸਟਬਿਨ ਵਿੱਚ ਪਾਓ।
+            </li>
+            <li>
+              <strong>4. 24 ਘੰਟੇ ਦੀ ਡਿਊਟੀ ਲਈ ਆਪਣਾ ਸਾਮਾਨ ਨਾਲ ਲਿਆਓ (Personal Items for 24-Hour Duty):</strong>
+              ਜੇਕਰ ਤੁਸੀਂ 24 ਘੰਟੇ (ਰਹਿਣ ਵਾਲੀ) ਡਿਊਟੀ 'ਤੇ ਹੋ, ਤਾਂ ਆਪਣਾ ਸਾਬਣ, ਸ਼ੈਂਪੂ, ਬੁਰਸ਼, ਪੇਸਟ, ਤੌਲੀਆ ਅਤੇ ਹੋਰ ਰੋਜ਼ਾਨਾ ਵਰਤੋਂ ਦੀਆਂ ਲੋੜੀਂਦੀਆਂ ਚੀਜ਼ਾਂ ਆਪਣੇ ਨਾਲ ਖ਼ੁਦ ਲੈ ਕੇ ਆਓ। ਮਰੀਜ਼ ਜਾਂ ਪਰਿਵਾਰ ਦੇ ਸਾਮਾਨ ਦੀ ਵਰਤੋਂ ਨਾ ਕਰੋ।
+            </li>
+            <li>
+              <strong>5. ਦਵਾਈਆਂ ਅਤੇ ਖ਼ੁਰਾਕ ਸਮੇਂ ਸਿਰ (Medication & Feeding on Time):</strong>
+              ਡਾਕਟਰ ਦੀ ਪਰਚੀ ਅਨੁਸਾਰ ਮਰੀਜ਼ ਨੂੰ ਸਹੀ ਸਮੇਂ 'ਤੇ ਦਵਾਈ ਅਤੇ ਖ਼ੁਰਾਕ ਦਿਓ। ਬਿਨਾਂ ਡਾਕਟਰ ਦੀ ਸਲਾਹ ਤੋਂ ਕੋਈ ਦਵਾਈ ਨਾ ਦਿਓ।
+            </li>
+            <li>
+              <strong>6. ਬੈੱਡ ਸੋਰ (ਜ਼ਖ਼ਮ) ਤੋਂ ਬਚਾਅ ਅਤੇ ਮਰੀਜ਼ ਦੀ ਸਹਾਇਤਾ (Bedsore Care & Mobility):</strong>
+              ਲਗਾਤਾਰ ਬੈੱਡ 'ਤੇ ਪਏ ਮਰੀਜ਼ ਦੀ ਹਰ 2 ਘੰਟਿਆਂ ਬਾਅਦ ਕਰਵਟ (Position) ਜ਼ਰੂਰ ਬਦਲੋ ਤਾਂ ਜੋ ਪਿੱਠ 'ਤੇ ਜ਼ਖ਼ਮ ਨਾ ਬਣਨ। ਮਰੀਜ਼ ਨੂੰ ਚੱਲਣ ਜਾਂ ਬੈਠਣ ਸਮੇਂ ਪੂਰਾ ਸਹਾਰਾ ਦਿਓ ਤਾਂ ਜੋ ਡਿੱਗਣ ਦਾ ਖ਼ਤਰਾ ਨਾ ਹੋਵੇ।
+            </li>
+            <li>
+              <strong>7. ਮੋਬਾਈਲ ਫ਼ੋਨ ਅਤੇ ਚੰਗਾ ਵਿਵਹਾਰ (Mobile Phone Usage & Conduct):</strong>
+              ਡਿਊਟੀ ਦੌਰਾਨ ਮੋਬਾਈਲ 'ਤੇ ਗੇਮਾਂ ਖੇਡਣਾ, ਵੀਡੀਓਜ਼ ਦੇਖਣਾ ਜਾਂ ਬੇਲੋੜੀਆਂ ਕਾਲਾਂ ਕਰਨਾ ਮਨ੍ਹਾ ਹੈ। ਮਰੀਜ਼ ਅਤੇ ਪਰਿਵਾਰਕ ਮੈਂਬਰਾਂ ਨਾਲ ਹਮੇਸ਼ਾ ਆਦਰ ਅਤੇ ਨਿਮਰਤਾ ਨਾਲ ਗੱਲ ਕਰੋ।
+            </li>
+            <li>
+              <strong>8. ਤੁਰੰਤ ਰਿਪੋਰਟਿੰਗ (Emergency & Vital Reporting):</strong>
+              ਮਰੀਜ਼ ਦੀ ਤਬੀਅਤ ਵਿੱਚ ਕੋਈ ਵੀ ਤਬਦੀਲੀ (ਜਿਵੇਂ ਬੁਖ਼ਾਰ, ਸਾਹ ਲੈਣ ਵਿੱਚ ਤਕਲੀਫ਼, ਬੀ.ਪੀ. ਉੱਪਰ-ਥੱਲੇ ਹੋਣਾ) ਹੋਣ 'ਤੇ ਤੁਰੰਤ ਪਰਿਵਾਰ ਅਤੇ ARDAS ਕੋਆਰਡੀਨੇਟਰ (+91 98770 62683) ਨੂੰ ਸੂਚਿਤ ਕਰੋ।
+            </li>
+          </ol>
+        </div>
 
         <!-- Step Indicator -->
         <div class="steps" id="stepTracker" aria-label="Application progress">
@@ -504,6 +563,7 @@
 </footer>
 
 <div class="float">
+  <a class="btn btn-caretaker" href="#applicationForm" aria-label="Apply for Caretaker Job">💼 Apply for Caretaker Job</a>
   <a class="btn btn-wa" href="https://wa.me/919877062683?text=Hello%20ARDAS%2C%20I%20want%20to%20apply%20for%20a%20caregiver%20or%20nursing%20job" rel="noopener" aria-label="Chat with ARDAS Careers on WhatsApp">WhatsApp Us</a>
   <a class="btn btn-brand" href="tel:+919877062683" aria-label="Call ARDAS Home Health Care">Call Now</a>
 </div>
