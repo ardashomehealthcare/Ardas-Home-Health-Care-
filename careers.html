@@ -109,7 +109,9 @@
     .wrap{max-width:1120px;margin:auto;padding:0 20px}
     header{position:sticky;top:0;background:rgba(250,246,240,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:100}
     .bar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;flex-wrap:wrap}
-    .logo{font-weight:800;font-size:1.15rem;color:var(--brand);text-decoration:none}
+    .logo{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;color:var(--brand);text-decoration:none}
+    .logo-img{height:48px;width:auto;aspect-ratio:auto;object-fit:contain;border-radius:6px;display:block}
+    @media(max-width:540px){.logo-text{display:none}.logo-img{height:42px}}
     nav{display:flex;gap:18px;flex-wrap:wrap}
     nav a{color:var(--ink);text-decoration:none;font-weight:600;font-size:.92rem}
     nav a:hover,nav a.active{color:var(--brand)}
@@ -245,7 +247,7 @@
 
 <header>
   <div class="wrap bar">
-    <a class="logo" href="index.html">ARDAS Home Health Care</a>
+    <a class="logo" href="index.html"><img src="images/logo.png" alt="ARDAS Home Health Care logo" class="logo-img"><span class="logo-text">ARDAS Home Health Care</span></a>
     <nav aria-label="Primary navigation">
       <a href="index.html#services">Services</a>
       <a href="index.html#how-it-works">How It Works</a>
@@ -267,6 +269,7 @@
   <section class="hero">
     <div class="wrap" style="max-width:860px;text-align:center;">
       <div class="crumbs"><a href="index.html">Home</a> / <span>Careers & Job Application</span></div>
+      <div style="margin-bottom:14px;"><img src="images/logo.png" alt="ARDAS Home Health Care logo" style="height:68px;width:auto;aspect-ratio:auto;object-fit:contain;margin:0 auto;background:#fff;padding:4px 14px;border-radius:10px;border:1px solid var(--line);box-shadow:0 2px 10px rgba(0,0,0,.04);"></div>
       <span class="badge">Join Our Caregiving Team in Bathinda</span>
       <h1>Job Application Form</h1>
       <p class="lead">We are hiring compassionate, verified healthcare professionals, home nurses, patient attendants, elderly caregivers, and babysitters in Bathinda, Punjab. Apply below to receive duty assignments directly.</p>
