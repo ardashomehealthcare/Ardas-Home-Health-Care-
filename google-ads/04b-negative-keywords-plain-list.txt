@@ -1,0 +1,606 @@
+Paste everything below into:
+Google Ads > Campaigns > [your campaign] > Audience, keywords and content > Negative keywords > 'Add negative keywords' pencil > 'Add multiple'
+(one per line, no commas)
+
+
+===== HOSPITAL-INSTITUTION =====
+hospital
+hospitals
+hospital job
+hospital jobs
+govt hospital
+government hospital
+sarkari hospital
+civil hospital
+military hospital
+cantonment
+cantt
+medical college
+medical
+clinic
+nursing home
+nursing homes
+icu
+emergency room
+operation theatre
+ot technician
+ot assistant
+dialysis
+pathology
+radiology
+x ray
+ultrasound
+sonographer
+pharmacy
+chemist
+medical store
+diagnostic
+lab technician
+disease
+treatment center
+rehabilitation centre
+rehab centre
+ashram
+old age home
+orphanage
+ngos
+ngo
+trust
+sanjeevani
+institution
+corporate
+company job
+office job
+
+===== OTHER-ROLES =====
+doctor
+mbbs
+bds
+dentist
+dental
+bams
+bhms
+physician
+surgeon
+anesthetist
+anaesthetist
+gnm
+anm
+bsc nursing
+b sc nursing
+post basic
+nursing officer
+staff nurse
+nurse vacancy
+nursing job
+nursing jobs
+nursing college
+nursing admission
+norinor
+cho
+community health officer
+asha worker
+asha
+anganwadi
+anm da
+gnm da
+pharmacist
+d pharmacist
+physiotherapist
+physiotherapy
+physio
+radiographer
+technician
+technicians
+operator
+driver
+drivers
+delivery
+delivery boy
+zomato
+swiggy
+blinkit
+zepto
+dunzo
+amazon
+flipkart
+courier
+loader
+security guard
+security
+bouncer
+guard
+housekeeping
+cleaner
+sweeper
+maid
+maid job
+cooking
+cook
+chef
+kitchen
+receptionist
+data entry
+accountant
+accounts
+cashier
+salesman
+sales
+marketing
+business development
+bde
+telecaller
+telecalling
+customer care executive
+call center
+bpo
+kpo
+it job
+software
+engineer
+engineering
+teacher
+teaching
+tutor
+school
+principal
+clerk
+peon
+helper
+electrician
+plumber
+carpenter
+mason
+mistri
+tailor
+beautician
+hairdresser
+gym trainer
+trainer
+yoga
+farmer
+agriculture
+tractor
+machine operator
+cnc
+welder
+fitter
+factory
+industry
+industrial
+mill
+showroom
+retail
+store
+
+===== SCAM-FEE-EASY-MONEY =====
+registration fee
+fees
+fee
+charges
+advance
+advance salary
+loan
+no investment
+investment
+commission
+earning
+earn money
+earn
+income
+daily income
+monthly income
+instant
+part time earning
+work from home
+wfh
+online job
+online jobs
+online work
+online earning
+mobile job
+typing job
+form filling
+ad posting
+captcha
+reseller
+mlm
+pyramid
+scheme
+freelance
+freelancing
+gig
+side income
+passive income
+no experience needed
+no interview
+direct joining
+guaranteed
+fixed salary job
+sponsorship
+
+===== TRAINING-COURSE =====
+course
+courses
+class
+classes
+training
+trainee
+trainer course
+institute
+academy
+coaching
+tutorial
+tutorials
+books
+notes
+pdf
+syllabus
+exam
+exams
+exam date
+admit card
+result
+results
+cut off
+cutoff
+previous papers
+question paper
+sample paper
+diploma
+certification
+certificate course
+degree
+college
+university
+admission
+scholarship
+student
+students
+internship
+intern
+fresher course
+learn
+learning
+how to become
+how to apply
+kya hota hai
+ka matlab
+meaning
+full form
+information
+details
+wikipedia
+salary after course
+best institute
+fee structure
+
+===== SERVICE-SEEKER =====
+hire
+hiring service
+book
+booking
+need a
+we need
+for my father
+for my mother
+for my parents
+for patient
+for parents
+for old
+for baby
+for newborn
+for child
+at home service
+home service
+home services
+services
+service provider
+providers
+provider
+agency services
+bureau
+near me service
+on rent
+rent
+monthly basis
+per month rate
+per day rate
+per day charge
+rate
+rates
+price
+prices
+pricing
+quote
+cost
+costs
+how much
+kitna
+kharcha
+cheap
+cheapest
+best agency
+top agency
+compare
+reviews
+review
+rating
+complaint
+complaints
+nri
+nri service
+for nri
+
+===== GOVT-EXAM =====
+sarkari
+sarkari naukri
+govt naukri
+govt
+govt job
+govt jobs
+government
+government job
+government jobs
+psc
+ppsc
+upsc
+ssc
+railway
+railways
+bank
+banking
+ibps
+sbi
+rbi
+police
+army
+navy
+air force
+defence
+defense
+paramilitary
+crpf
+bsf
+patwari
+panchayat
+gram sachiv
+revenue
+excise
+forest
+board
+notification
+notifications
+result 2026
+result 2025
+syllabus 2026
+apply online last date
+last date
+eligibility
+age limit
+eligibility criteria
+counseling
+merit list
+selection list
+waiting list
+answer key
+nvs
+kvs
+esic
+aiims
+pgimer
+pgi
+bhu
+du
+punjab university
+
+===== SALARY-ONLY =====
+salary
+salaries
+salary slip
+salary per month
+salary package
+pay scale
+payscale
+scale
+grade pay
+in hand
+take home
+increments
+per month salary
+kitni salary
+tankhwah
+vetan
+majdoori
+minimum wages
+wage
+wages
+salary of
+highest salary
+lowest salary
+average salary
+
+===== OVERSEAS =====
+abroad
+foreign
+overseas
+gulf
+dubai
+saudi
+saudi arabia
+qatar
+kuwait
+oman
+bahrain
+malaysia
+singapore
+italy
+germany
+uk
+usa
+america
+canada
+australia
+new zealand
+japan
+korea
+africa
+ireland
+portugal
+croatia
+romania
+poland
+greece
+malta
+cyprus
+israel
+visa
+visas
+work permit
+work visa
+immigration
+immigrate
+sponsor
+sponsorship
+relocation
+relocate
+delhi
+mumbai
+chennai
+bangalore
+bengaluru
+hyderabad
+kolkata
+pune
+noida
+gurgaon
+chandigarh
+ludhiana
+amritsar
+jalandhar
+patiala
+mohali
+haryana
+himachal
+rajasthan
+uttar pradesh
+bihar
+goa
+kerala
+tamil nadu
+gujarat
+maharashtra
+
+===== MINORS =====
+under 18
+below 18
+16 year
+17 year
+15 year
+14 year
+10th pass student
+12th pass student
+school boy
+school girl
+college student
+part time for student
+for students
+
+===== COMPETITOR-PORTAL =====
+apollo
+apollo home
+portea
+portea medical
+nightingales
+care24
+emoha
+samarthan
+helpage
+help age
+age care india
+anthara
+khyaal
+nibrus
+kITES
+senior care
+elder care india
+naukri com
+naukri com jobs
+indeed
+indeed com
+linkedin
+monster com
+quikr jobs
+olx jobs
+apna app
+job hai
+sarkari result
+free job alert
+freshersworld
+times jobs
+glassdoor
+internshala
+cutshort
+
+===== MISC-JUNK =====
+dog
+dogs
+pet
+pets
+cat
+cow
+cattle
+buffalo
+animal
+babysitter for my
+nanny for my
+car
+car caretaker
+bike
+property
+property caretaker
+society caretaker
+building caretaker
+estate
+farm house
+farmhouse
+office caretaker
+shop caretaker
+movie
+film
+song
+video
+photo
+images
+image
+wallpaper
+quotes
+status
+whatsapp status
+joke
+jokes
+meme
+memes
+news
+latest news
+youtube
+instagram
+facebook
+twitter
+app download
+apk
+mod
+game
+games
+download
+business
+franchise
+distributor
+dealer
+shop
+startup
+insurance
+loan agent
+real estate
+plots
+property dealer

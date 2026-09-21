@@ -8,7 +8,10 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-TT9HC615J6');
-    gtag('config', 'AW-600056315');
+    /* conversion_linker:true stores the GCLID from a Google Ads click in a cookie so the
+       "Caretaker Job Form Submit" conversion is attributed back to the exact keyword.
+       Without it, ad clicks that arrive without ?gclid= in the URL are not credited. */
+    gtag('config', 'AW-600056315', { 'conversion_linker': true });
   </script>
 
   <meta charset="UTF-8">
@@ -779,6 +782,32 @@
 
       setProgress(100, 'Done!');
       showToast('Application submitted successfully! Join WhatsApp group below.', false);
+
+      /* ---- CONVERSION TRACKING --------------------------------------------------
+         Fires ONLY after the application has actually reached the Google Sheet.
+         1) GA4 event      - works immediately, no setup needed.
+         2) Google Ads     - replace REPLACE_WITH_CONVERSION_LABEL with the label
+                             from Google Ads > Tools > Conversions > your
+                             "Caretaker Job Form Submit" action.
+                             The snippet looks like: AW-600056315/AbCdEfGhIjKlMnOpQrSt
+                             so you only paste the part AFTER the slash.
+         See google-ads/01-conversion-action-setup.md for the step-by-step.       */
+      try {
+        if (typeof gtag === 'function') {
+          gtag('event', 'job_form_submit', {
+            'event_category': 'Lead',
+            'event_label': 'Caretaker job application - careers.html',
+            'value': 100,
+            'currency': 'INR'
+          });
+          gtag('event', 'conversion', {
+            'send_to': 'AW-600056315/REPLACE_WITH_CONVERSION_LABEL'
+          });
+        }
+      } catch (convErr) {
+        console.warn('Conversion tracking error (form still submitted OK):', convErr);
+      }
+      /* ---- END CONVERSION TRACKING -------------------------------------------- */
 
       // Reveal WhatsApp group link matching gender selection
       waLink.href = WHATSAPP_LINKS[gender];
