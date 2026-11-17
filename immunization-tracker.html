@@ -128,6 +128,7 @@ th{background:#EFF4F8}
 </header>
 
 <main class="wrap"><div class="alert alert-red"><b>Prototype only — not clinically validated.</b> Do not use this schedule to decide vaccination or catch-up. DOB cannot establish whether a vaccine was given. Verify every dose and eligibility with the MCP card and a government health worker. This app does not automatically receive government updates.</div>
+  <div class="alert alert-amber"><b>Weekday setting:</b> Displayed due dates and schedule-window boundaries are moved forward to the next Monday, Wednesday, or Friday (by up to two days). This is a tracker setting, not an official UIP date change. Confirm the timing with a government health worker.</div>
   <!-- DOB CARD -->
   <section class="card" id="dobCard">
     <h2 style="margin:0 0 6px;font-size:20px">👶 Child details</h2>
@@ -368,11 +369,21 @@ function ageText(dob, today){
   if(y===0) return m+' month'+(m===1?'':'s')+' '+d+' day'+(d===1?'':'s');
   return y+' year'+(y===1?'':'s')+' '+m+' month'+(m===1?'':'s');
 }
+function nextClinicDay(date){
+  const clinicDays=[1,3,5]; // Monday, Wednesday, Friday
+  let adjusted=new Date(date);
+  while(!clinicDays.includes(adjusted.getDay())) adjusted=addDays(adjusted,1);
+  return adjusted;
+}
 function dueDates(item, dob){
   let due, end;
   if(item.type==='days'){ due=addDays(dob,item.due); end=addDays(due, item.grace||30); }
   else if(item.type==='months'){ due=addMonths(dob,item.due); end=addMonths(dob,item.windowEnd); }
   else { due=addYears(dob,item.due); end=item.windowEnd===item.due ? addDays(due, item.grace||365) : addYears(dob,item.windowEnd); }
+  const adjustedDue=nextClinicDay(due);
+  const shiftDays=daysBetween(due,adjustedDue);
+  due=adjustedDue;
+  end=addDays(end,shiftDays);
   return {due,end};
 }
 
