@@ -26,6 +26,13 @@ a{color:var(--teal)}
 .hero h1 span{color:#FFB86B}
 .hero p{margin:0;opacity:.92;max-width:760px;font-size:15px}
 .tricolor{height:5px;background:linear-gradient(90deg,var(--saffron) 0 33%,#fff 33% 66%,var(--green) 66% 100%)}
+.back-home-bar{background:#faf6f0;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.back-home-link{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 20px;border:2px solid #592823;border-radius:12px;background:linear-gradient(135deg,#8a2f2b,#b4552d);color:#fff;text-decoration:none;font-size:17px;font-weight:850;box-shadow:0 5px 14px rgba(89,40,35,.22);transition:transform .18s ease,box-shadow .18s ease,filter .18s ease}
+.back-home-link:hover{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 8px 18px rgba(89,40,35,.3)}
+.back-home-link:focus-visible{outline:3px solid #f2b134;outline-offset:3px}
+.back-home-link .back-arrow{font-size:23px;line-height:1}
+.preview-label{color:#6b5d52;font-size:13px}
+@media(max-width:520px){.back-home-link{width:100%;font-size:16px}.preview-label{width:100%;text-align:center}}
 .wrap{max-width:1080px;margin:0 auto;padding:16px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -113,7 +120,7 @@ th{background:#EFF4F8}
   </div>
 </div>
 <div class="tricolor"></div>
-<div style="background:#faf6f0;padding:12px 18px"><a href="index.html" style="color:#8a2f2b;font-weight:700;text-decoration:none">← Back to ARDAS Home Health Care</a><span style="float:right;color:#6b5d52;font-size:13px">Sandbox preview · Not for clinical use</span></div>
+<div class="back-home-bar"><a class="back-home-link" href="index.html"><span class="back-arrow" aria-hidden="true">←</span><span>Back to ARDAS Home Health Care</span></a><span class="preview-label">Sandbox preview · Not for clinical use</span></div>
 <div class="topbar">
   <div><b>🇮🇳 Universal Immunization Programme (UIP)</b> &nbsp;•&nbsp; Ministry of Health &amp; Family Welfare, Govt. of India</div>
   <div class="pill">Free vaccines at Govt. Hospitals / PHC / CHC / Anganwadi</div>
