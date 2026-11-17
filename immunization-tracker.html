@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Child Immunization Tracker Preview | ARDAS Home Health Care</title>
+<meta name="description" content="Free Govt. of India UIP immunization tracker. Enter date of birth only — see due, overdue, given and upcoming vaccines as per National Immunization Schedule.">
+<style>
+:root{
+  --saffron:#8a2f2b; --saffron-dark:#6d221e; --green:#138808; --green-dark:#0E6B06;
+  --navy:#592823; --navy2:#8a2f2b; --teal:#9e5535; --bg:#faf6f0; --card:#FFFFFF;
+  --border:#DCE6EC; --text:#1A2B3C; --muted:#5A6D7E; --red:#C0392B; --red-bg:#FDECEA;
+  --amber:#B7791F; --amber-bg:#FFF4D6; --blue-bg:#E8F0FE; --green-bg:#E6F4EA;
+  --radius:14px; --shadow:0 4px 18px rgba(11,44,74,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+a{color:var(--teal)}
+.topbar{background:linear-gradient(90deg,var(--navy),var(--navy2));color:#fff;padding:10px 16px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.topbar b{letter-spacing:.3px}
+.topbar .pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);padding:3px 10px;border-radius:999px;font-size:12px}
+.hero{background:linear-gradient(135deg,#592823 0%,#8a2f2b 65%,#b4552d 100%);color:#fff;padding:28px 16px 22px}
+.hero-inner{max-width:1080px;margin:0 auto}
+.hero h1{margin:0 0 6px;font-size:clamp(22px,4vw,34px);line-height:1.2}
+.hero h1 span{color:#FFB86B}
+.hero p{margin:0;opacity:.92;max-width:760px;font-size:15px}
+.tricolor{height:5px;background:linear-gradient(90deg,var(--saffron) 0 33%,#fff 33% 66%,var(--green) 66% 100%)}
+.wrap{max-width:1080px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:820px){.grid2{grid-template-columns:1fr}}
+label{font-weight:700;font-size:14px;display:block;margin-bottom:6px}
+input[type=date]{width:100%;padding:13px 14px;border:2px solid var(--border);border-radius:10px;font-size:16px;background:#fff}
+input[type=date]:focus{outline:none;border-color:var(--teal)}
+.btn{border:0;border-radius:10px;padding:12px 16px;font-weight:800;cursor:pointer;font-size:15px}
+.btn-primary{background:var(--saffron);color:#fff;width:100%}
+.btn-primary:hover{background:var(--saffron-dark)}
+.btn-outline{background:#fff;border:2px solid var(--border);color:var(--navy)}
+.btn-green{background:var(--green);color:#fff}
+.btn-small{padding:8px 12px;font-size:13px;border-radius:8px}
+.hint{font-size:13px;color:var(--muted);margin-top:8px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+@media(max-width:820px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;background:#fff}
+.stat .num{font-size:26px;font-weight:900;line-height:1}
+.stat .lbl{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
+.progress{height:12px;background:#E9EEF2;border-radius:999px;overflow:hidden;margin-top:10px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--green),var(--teal));width:0%}
+.badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:800}
+.b-given{background:var(--green-bg);color:var(--green-dark);border:1px solid #B7E1C0}
+.b-due{background:var(--amber-bg);color:#7A5A00;border:1px solid #F0D48A}
+.b-over{background:var(--red-bg);color:var(--red);border:1px solid #F5B7B1}
+.b-up{background:var(--blue-bg);color:#1A4A8A;border:1px solid #B9D2F5}
+.b-late{background:#FFF0E6;color:#8A4A00;border:1px solid #FFD1A8}
+.visit{margin-top:18px;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff}
+.visit-head{background:#EFF4F8;padding:12px 14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--border)}
+.visit-head h3{margin:0;font-size:16px}
+.visit-head .sub{font-size:13px;color:var(--muted)}
+.vrow{display:grid;grid-template-columns:1.6fr .9fr .9fr auto;gap:10px;padding:12px 14px;border-top:1px solid #EEF2F5;align-items:center}
+@media(max-width:820px){.vrow{grid-template-columns:1fr;gap:8px}}
+.vname{font-weight:800}
+.vdesc{font-size:13px;color:var(--muted)}
+.vdate{font-size:14px}
+.vdate b{display:block}
+.small{font-size:12px;color:var(--muted)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0}
+.toolbar select,.toolbar input[type=search]{padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;background:#fff}
+.chip{border:1.5px solid var(--border);background:#fff;border-radius:999px;padding:7px 12px;font-weight:700;font-size:13px;cursor:pointer}
+.chip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.alert{border-radius:12px;padding:12px 14px;margin-top:12px;font-size:14px}
+.alert-red{background:var(--red-bg);border:1px solid #F5B7B1;color:#7B1F16}
+.alert-amber{background:var(--amber-bg);border:1px solid #F0D48A;color:#5C4300}
+.alert-green{background:var(--green-bg);border:1px solid #B7E1C0;color:#0E4D08}
+details{border:1px solid var(--border);border-radius:12px;background:#fff;margin-top:10px;overflow:hidden}
+summary{padding:13px 14px;font-weight:800;cursor:pointer;background:#F8FAFC}
+details .body{padding:14px;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{border:1px solid var(--border);padding:8px;text-align:left;vertical-align:top}
+th{background:#EFF4F8}
+.footer{color:var(--muted);font-size:13px;text-align:center;padding:22px 16px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal.open{display:flex}
+.modal-box{background:#fff;border-radius:16px;max-width:520px;width:100%;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal-box h3{margin-top:0}
+.modal-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:10px;font-size:16px;margin:8px 0 12px}
+.empty{text-align:center;padding:28px 16px;color:var(--muted)}
+.kpi-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.kpi{flex:1;min-width:140px;border:1px solid var(--border);border-radius:12px;padding:12px;background:#F8FAFC}
+.kpi b{font-size:18px}
+@media print{
+  .topbar,.toolbar,.no-print{display:none!important}
+  body{background:#fff}
+  .card,.visit{box-shadow:none}
+}
+</style>
+</head>
+<body>
+<div id="languageScreen" role="dialog" aria-modal="true" aria-labelledby="languageTitle" style="position:fixed;inset:0;z-index:1000;background:#f4f7f9;overflow:auto;padding:24px 16px">
+  <div style="max-width:720px;margin:4vh auto;background:white;border:1px solid #dce6ec;border-radius:16px;padding:24px;box-shadow:0 4px 18px #0b2c4a14">
+    <div style="color:#0e7c7b;font-weight:800">ARDAS HOME HEALTH CARE · PREVIEW</div>
+    <h1 id="languageTitle" style="font-size:26px;color:#0b2c4a;margin-bottom:6px">Choose your language</h1>
+    <p style="color:#5a6d7e">Select a language to open the app.</p>
+    <label for="languageChoice">Language</label>
+    <select id="languageChoice" style="width:100%;padding:13px;border:2px solid #dce6ec;border-radius:10px;font-size:16px"></select>
+    <p id="languageNotice" style="background:#fff4d6;border:1px solid #f0d48a;border-radius:10px;padding:12px;color:#5c4300" aria-live="polite"></p>
+    <button id="languageContinue" class="btn btn-primary" type="button">Continue in English →</button>
+  </div>
+</div>
+<div class="tricolor"></div>
+<div style="background:#faf6f0;padding:12px 18px"><a href="index.html" style="color:#8a2f2b;font-weight:700;text-decoration:none">← Back to ARDAS Home Health Care</a><span style="float:right;color:#6b5d52;font-size:13px">Sandbox preview · Not for clinical use</span></div>
+<div class="topbar">
+  <div><b>🇮🇳 Universal Immunization Programme (UIP)</b> &nbsp;•&nbsp; Ministry of Health &amp; Family Welfare, Govt. of India</div>
+  <div class="pill">Free vaccines at Govt. Hospitals / PHC / CHC / Anganwadi</div>
+</div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p style="margin:0 0 10px;font-weight:700;color:#ffe2c7">Courtesy of ARDAS Home Health Care · Bathinda</p>
+    <h1><span>Immunization Tracker</span><br>Birth to 16 Years — UIP Schedule</h1>
+    <p>Enter the child’s <b>gender and date of birth</b>. The app will automatically show every vaccine due as per the <b>National Immunization Schedule (NIS)</b>, whether it is <b>recorded, due or upcoming</b> — with exact due dates. Mark vaccines as given to update the record. Records are stored in this browser on this device using IndexedDB.</p>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <span class="badge" style="background:#fff;color:#0B2C4A">Prototype • clinical review required</span>
+      <span class="badge" style="background:#fff;color:#0B2C4A">✓ No login • Stored on this device</span>
+      <span class="badge" style="background:#fff;color:#0B2C4A">✓ Works offline</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap"><div class="alert alert-red"><b>Prototype only — not clinically validated.</b> Do not use this schedule to decide vaccination or catch-up. DOB cannot establish whether a vaccine was given. Verify every dose and eligibility with the MCP card and a government health worker. This app does not automatically receive government updates.</div>
+  <!-- DOB CARD -->
+  <section class="card" id="dobCard">
+    <h2 style="margin:0 0 6px;font-size:20px">👶 Child details</h2>
+    <p class="hint" style="margin-top:0">Enter the child’s gender and date of birth. The schedule is based on DOB; gender is saved with the record on this device.</p>
+    <div style="margin-bottom:14px;max-width:520px">
+      <label for="childGender">Gender *</label><select id="childGender" style="width:100%;padding:13px;border:2px solid var(--border);border-radius:10px;font-size:16px"><option value="">Select</option><option value="Girl">Girl</option><option value="Boy">Boy</option><option value="Another gender">Another gender</option><option value="Prefer not to say">Prefer not to say</option></select>
+    </div>
+    <div class="grid2" style="align-items:end">
+      <div>
+        <label for="dob">Date of Birth *</label>
+        <input type="date" id="dob" max="">
+        <div class="hint">Example: 15 June 2025. The app will generate all due dates from this date.</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" id="calcBtn" style="flex:1;min-width:160px">Calculate My Schedule →</button>
+        <button class="btn btn-outline" id="todayBtn" type="button">Newborn (Today)</button>
+      </div>
+    </div>
+    <div id="dobError" style="color:var(--red);font-weight:700;font-size:14px;margin-top:8px"></div>
+
+    <div id="summaryBox" style="display:none;margin-top:16px">
+      <div class="kpi-row">
+        <div class="kpi"><div class="small">Child's Age Today</div><b id="ageText">—</b><div class="small" id="dobText">—</div></div>
+        <div class="kpi"><div class="small">Next Vaccine Due</div><b id="nextText">—</b><div class="small" id="nextSub">—</div></div>
+        <div class="kpi"><div class="small">Coverage</div><b id="covText">—</b><div class="progress"><div id="covBar"></div></div></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="num" id="stTotal">0</div><div class="lbl">Total Doses</div></div>
+        <div class="stat"><div class="num" style="color:var(--green-dark)" id="stGiven">0</div><div class="lbl">Given ✓</div></div>
+        <div class="stat"><div class="num" style="color:var(--amber)" id="stDue">0</div><div class="lbl">Due Now</div></div>
+        <div class="stat"><div class="num" style="color:var(--red)" id="stOver">0</div><div class="lbl">Past due • not recorded</div></div>
+        <div class="stat"><div class="num" style="color:#1A4A8A" id="stUp">0</div><div class="lbl">Upcoming</div></div>
+      </div>
+      <div id="alertBox"></div>
+      <div id="spacingReview" aria-live="polite"></div>
+      <div class="alert alert-amber"><b>Next step:</b> Take the MCP card and this list to an ANM or government health worker. Dates shown are routine dates, not a personalised catch-up recommendation. A blank record does not prove a vaccine was missed.</div>
+      <button class="btn btn-outline btn-small no-print" id="reviewHistory" type="button" style="margin-top:10px">Review previous vaccination record</button>
+      <div class="toolbar no-print">
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="overdue">⚠️ Past due • not recorded</button>
+        <button class="chip" data-filter="due">⏰ Due Now</button>
+        <button class="chip" data-filter="given">✅ Given</button>
+        <button class="chip" data-filter="upcoming">🔜 Upcoming</button>
+        <span style="flex:1"></span>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700">
+          <input type="checkbox" id="jeToggle"> Show JE (ask your health worker if applicable)
+        </label>
+        <button class="btn btn-outline btn-small" id="reminderBtn" type="button">📅 Add to calendar reminder</button>
+        <button class="btn btn-outline btn-small" id="printBtn">🖨️ Print / Save PDF</button>
+        <button class="btn btn-outline btn-small" id="resetBtn">↺ Reset Record</button>
+      </div>
+      <p class="hint no-print">Tap <b>“Mark Given”</b> on any vaccine and enter the actual date recorded on the vaccination card. A recorded dose is not independently verified. Records are saved in this browser for that DOB. Children sharing a DOB will share a record; use separate browsers until profiles are added.</p>
+    </div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section id="scheduleSection" style="display:none">
+    <div id="scheduleList"></div>
+    <div id="emptyState" class="card empty" style="display:none">
+      <div style="font-size:36px">📋</div>
+      <b>No vaccines in this filter.</b><br>Try another filter or mark more vaccines as given.
+    </div>
+  </section>
+
+  <!-- GOVT INSTRUCTIONS -->
+  <section class="card" style="margin-top:18px">
+    <h2 style="margin:0 0 4px;font-size:20px">📜 Govt. of India Instructions — UIP Protocol</h2>
+    <p class="hint" style="margin-top:0">This prototype draws on published UIP materials but has not been validated against all current government guidance. Always confirm with the Medical Officer / ANM at your Govt. facility.</p>
+
+    <div class="alert alert-amber">Schedule shown is an illustrative national routine schedule, not a verified current or historical guideline. JE depends on district, historical rollout differs, and Vitamin A is a supplement, not a vaccine. Dates and windows require clinical validation; a health worker must plan catch-up based on actual records and applicable guidance.</div>
+    <p>Consult the <a href="https://nhm.gov.in/New_Updates_2018/NHM_Components/Immunization/Guildelines_for_immunization/Operational_Guidelines_for_Introduction_of_Rotavac_in_UIP.pdf">NHM immunization operational guidelines</a> and the <a href="https://nhm.gov.in/New_Updates_2018/NHM_Components/Immunization/Guildelines_for_immunization/FAQ_on_Immunization_for_Health_Workers-English.pdf">NHM health worker FAQ</a>; these documents may not reflect later updates. Check current national and state directions with your government health facility.</p>
+
+  </section>
+
+  <div class="footer">
+    Independent prototype • Not affiliated with the Government of India • Records are saved in IndexedDB in this browser and may be lost if browser data is cleared. Records are not synced between devices. Only one child record per DOB is supported per browser; use separate browsers for children with the same DOB until profiles are added. Not a replacement for the MCP card or U-WIN.
+  </div>
+</main>
+
+<!-- Calendar instructions -->
+<div class="modal" id="reminderModal" role="dialog" aria-modal="true" aria-labelledby="reminderTitle">
+ <div class="modal-box" style="max-height:85vh;overflow:auto;max-width:620px">
+  <h3 id="reminderTitle">Add a calendar reminder</h3>
+  <p id="reminderDetails"></p>
+  <p>The downloaded <b>.ics</b> file contains an all-day event with a requested reminder one day before. Calendar apps may handle alerts differently; check the alert after importing. The event uses a generic title and does not include the child’s name or vaccination details.</p>
+  <h4>Android</h4><ol><li>Tap <b>Download calendar file</b>.</li><li>Open the download and choose a calendar app that supports importing .ics files. If no app offers to import it, use a calendar service’s import feature or another calendar app.</li><li>Check the date and alert, then save. Enable notifications for your calendar app.</li></ol>
+  <h4>iPhone</h4><ol><li>Tap <b>Download calendar file</b>, then open it from Downloads or the Files app.</li><li>Tap the event and choose <b>Add to Calendar</b> or <b>Add All</b>; choose a calendar if asked.</li><li>Check the date and alert, then save. Enable Calendar notifications in Settings.</li></ol>
+  <p>Steps vary by phone and app. Downloading alone does not save the event. Calendar alerts depend on the phone’s settings. This routine date is not a personalised catch-up recommendation; confirm it with a health worker.</p>
+  <button class="btn btn-primary" id="downloadReminder" type="button">Download calendar file (.ics)</button>
+  <button class="btn btn-outline" id="closeReminder" type="button" style="width:100%;margin-top:8px">Close</button>
+ </div>
+</div>
+<!-- Prior record review -->
+<div class="modal" id="historyModal" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+  <div class="modal-box" style="max-height:85vh;overflow:auto;max-width:650px">
+    <h3 id="historyTitle">Review the immunization record</h3>
+    <p>Use the MCP card or another vaccination record. Enter the actual date for each dose recorded as given. Enter the actual date if given, or select “Missed / not given” only if you know it was not given. Leave both blank if unsure. Blank does not mean missed.</p>
+    <p><b>Important:</b> This prototype cannot prescribe catch-up. A health worker must review previous doses, intervals, local guidance and eligibility.</p>
+    <div id="historyList"></div>
+    <p id="historyError" style="color:#b42318" role="alert"></p>
+    <button class="btn btn-primary" id="saveHistory" type="button">Save record and view schedule</button>
+    <button class="btn btn-outline" id="skipHistory" type="button" style="width:100%;margin-top:8px">I don't have the record now</button>
+  </div>
+</div>
+<!-- MODAL -->
+<div class="modal" id="givenModal">
+  <div class="modal-box">
+    <h3 id="modalTitle">Mark as Given</h3>
+    <p class="small" id="modalSub" style="margin:0"></p>
+    <label for="givenDate">Actual date vaccine was given (at Govt. hospital) *</label>
+    <input type="date" id="givenDate">
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-green" id="saveGiven" style="flex:1">Save — Mark Given ✓</button>
+      <button class="btn btn-outline" id="cancelGiven">Cancel</button>
+    </div>
+    <button class="btn btn-outline btn-small" id="markMissed" style="width:100%;margin-top:8px">Mark as missed / not given</button>
+    <p class="small">Only mark missed if you know the dose was not given. A health worker must assess catch-up.</p>
+    <button class="btn btn-outline btn-small" id="clearGiven" style="width:100%;margin-top:8px">Clear recorded status</button>
+  </div>
+</div>
+
+<script>
+// Language selection is available at each opening. Medical translations require review.
+const LANGUAGES = [['en','English'],['hi','हिन्दी'],['pa','ਪੰਜਾਬੀ']];
+const languageChoice=document.getElementById('languageChoice');
+LANGUAGES.forEach(([code,name])=>{const o=document.createElement('option');o.value=code;o.textContent=name;languageChoice.appendChild(o)});
+let selectedLanguage='en';
+const translations={
+hi:{
+'Choose your language':'अपनी भाषा चुनें','Select a language to open the app.':'ऐप खोलने के लिए भाषा चुनें।','Language':'भाषा',
+'Enter Date of Birth (DOB) Only':'केवल जन्म तिथि दर्ज करें','Date of Birth *':'जन्म तिथि *','Calculate My Schedule →':'मेरा कार्यक्रम देखें →','Newborn (Today)':'नवजात (आज)',
+'No other personal details are required.':'अन्य व्यक्तिगत जानकारी आवश्यक नहीं है।',
+"Child's Age Today":'आज बच्चे की आयु','Next Vaccine Due':'अगला देय vaccine','Coverage':'रिकॉर्ड की प्रगति','Total Doses':'कुल doses','Given ✓':'लगाए गए ✓','Due Now':'अब देय','Upcoming':'आगे आने वाले',
+'Past due • not recorded':'तिथि बीत गई • दर्ज नहीं','Overdue / Missed':'तिथि बीत गई / दर्ज नहीं','Given':'दर्ज','All':'सभी',
+'Show JE (ask your health worker if applicable)':'JE दिखाएँ (लागू होने के लिए स्वास्थ्य कार्यकर्ता से पूछें)',
+'Print / Save PDF':'प्रिंट / PDF सहेजें','Reset Record':'रिकॉर्ड मिटाएँ','Mark Given':'लगाया गया दर्ज करें','Mark as Given':'लगाया गया दर्ज करें','Actual date vaccine was given (at Govt. hospital) *':'vaccine लगाए जाने की वास्तविक तिथि *','Save — Mark Given ✓':'सहेजें ✓','Cancel':'रद्द करें','Clear recorded status':'दर्ज जानकारी हटाएँ',
+'At Birth':'जन्म पर','6 Weeks':'6 सप्ताह','10 Weeks':'10 सप्ताह','14 Weeks':'14 सप्ताह','9–12 Months':'9–12 महीने','16–24 Months':'16–24 महीने','5–6 Years':'5–6 वर्ष','10 Years':'10 वर्ष','16 Years':'16 वर्ष',
+'Please enter Date of Birth.':'कृपया जन्म तिथि दर्ज करें।','DOB cannot be in the future.':'जन्म तिथि भविष्य की नहीं हो सकती।',
+'Recorded as given':'लगाया गया दर्ज है','Due on:':'देय तिथि:','Was due:':'देय था:','Due:':'देय:','Given on:':'लगाने की तिथि:','days':'दिन','dose(s)':'dose',
+'Discuss eligibility with a health worker':'पात्रता के लिए स्वास्थ्य कार्यकर्ता से पूछें','Timing needs clinical confirmation':'समय की पुष्टि स्वास्थ्य कार्यकर्ता से करें','Confirm details with a health worker':'विवरण स्वास्थ्य कार्यकर्ता से पूछें','Protects against:':'इनसे सुरक्षा:',
+'Govt. of India Instructions — UIP Protocol':'भारत सरकार के निर्देश — UIP Protocol',
+'Prototype only — not clinically validated.':'केवल प्रारंभिक नमूना — चिकित्सकीय जाँच नहीं हुई है।',
+'Do not use this schedule to decide vaccination or catch-up. DOB cannot establish whether a vaccine was given. Verify every dose and eligibility with the MCP card and a government health worker. This app does not automatically receive government updates.':'vaccination या catch-up का निर्णय इस कार्यक्रम से न लें। जन्म तिथि से पता नहीं चलता कि vaccine लगा है या नहीं। हर dose और पात्रता MCP card और सरकारी स्वास्थ्य कार्यकर्ता से जाँचें। सरकारी अपडेट अपने आप नहीं आते।'
+},pa:{
+'Choose your language':'ਆਪਣੀ ਭਾਸ਼ਾ ਚੁਣੋ','Select a language to open the app.':'ਐਪ ਖੋਲ੍ਹਣ ਲਈ ਭਾਸ਼ਾ ਚੁਣੋ।','Language':'ਭਾਸ਼ਾ',
+'Enter Date of Birth (DOB) Only':'ਸਿਰਫ਼ ਜਨਮ ਮਿਤੀ ਦਰਜ ਕਰੋ','Date of Birth *':'ਜਨਮ ਮਿਤੀ *','Calculate My Schedule →':'ਮੇਰਾ ਸਮਾਂ-ਸਾਰਣੀ ਦੇਖੋ →','Newborn (Today)':'ਨਵਜੰਮਿਆ (ਅੱਜ)',
+"Child's Age Today":'ਅੱਜ ਬੱਚੇ ਦੀ ਉਮਰ','Next Vaccine Due':'ਅਗਲਾ ਦੇਣ ਯੋਗ vaccine','Coverage':'ਦਰਜ ਰਿਕਾਰਡ ਦੀ ਤਰੱਕੀ','Total Doses':'ਕੁੱਲ doses','Given ✓':'ਲਗਾਏ ਗਏ ✓','Due Now':'ਹੁਣ ਦੇਣ ਯੋਗ','Upcoming':'ਅੱਗੇ ਆਉਣ ਵਾਲੇ',
+'Past due • not recorded':'ਮਿਤੀ ਲੰਘ ਗਈ • ਦਰਜ ਨਹੀਂ','Overdue / Missed':'ਮਿਤੀ ਲੰਘ ਗਈ / ਦਰਜ ਨਹੀਂ','Given':'ਦਰਜ','All':'ਸਾਰੇ',
+'Show JE (ask your health worker if applicable)':'JE ਦਿਖਾਓ (ਲਾਗੂ ਹੋਣ ਬਾਰੇ ਸਿਹਤ ਕਰਮਚਾਰੀ ਨੂੰ ਪੁੱਛੋ)',
+'Print / Save PDF':'ਪ੍ਰਿੰਟ / PDF ਸੰਭਾਲੋ','Reset Record':'ਰਿਕਾਰਡ ਮਿਟਾਓ','Mark Given':'ਲੱਗਿਆ ਹੋਇਆ ਦਰਜ ਕਰੋ','Mark as Given':'ਲੱਗਿਆ ਹੋਇਆ ਦਰਜ ਕਰੋ','Actual date vaccine was given (at Govt. hospital) *':'vaccine ਲੱਗਣ ਦੀ ਅਸਲ ਮਿਤੀ *','Save — Mark Given ✓':'ਸੰਭਾਲੋ ✓','Cancel':'ਰੱਦ ਕਰੋ','Clear recorded status':'ਦਰਜ ਜਾਣਕਾਰੀ ਹਟਾਓ',
+'At Birth':'ਜਨਮ ਵੇਲੇ','6 Weeks':'6 ਹਫ਼ਤੇ','10 Weeks':'10 ਹਫ਼ਤੇ','14 Weeks':'14 ਹਫ਼ਤੇ','9–12 Months':'9–12 ਮਹੀਨੇ','16–24 Months':'16–24 ਮਹੀਨੇ','5–6 Years':'5–6 ਸਾਲ','10 Years':'10 ਸਾਲ','16 Years':'16 ਸਾਲ',
+'Please enter Date of Birth.':'ਕਿਰਪਾ ਕਰਕੇ ਜਨਮ ਮਿਤੀ ਦਰਜ ਕਰੋ।','DOB cannot be in the future.':'ਜਨਮ ਮਿਤੀ ਭਵਿੱਖ ਦੀ ਨਹੀਂ ਹੋ ਸਕਦੀ।',
+'Recorded as given':'ਲੱਗਿਆ ਹੋਇਆ ਦਰਜ ਹੈ','Due on:':'ਦੇਣ ਦੀ ਮਿਤੀ:','Was due:':'ਦੇਣ ਯੋਗ ਸੀ:','Due:':'ਦੇਣ ਯੋਗ:','Given on:':'ਲੱਗਣ ਦੀ ਮਿਤੀ:','days':'ਦਿਨ','dose(s)':'dose',
+'Discuss eligibility with a health worker':'ਯੋਗਤਾ ਬਾਰੇ ਸਿਹਤ ਕਰਮਚਾਰੀ ਨਾਲ ਗੱਲ ਕਰੋ','Timing needs clinical confirmation':'ਸਮੇਂ ਦੀ ਪੁਸ਼ਟੀ ਸਿਹਤ ਕਰਮਚਾਰੀ ਤੋਂ ਕਰੋ','Confirm details with a health worker':'ਵੇਰਵੇ ਸਿਹਤ ਕਰਮਚਾਰੀ ਤੋਂ ਪੁੱਛੋ','Protects against:':'ਇਨ੍ਹਾਂ ਤੋਂ ਬਚਾਅ:',
+'Govt. of India Instructions — UIP Protocol':'ਭਾਰਤ ਸਰਕਾਰ ਦੀਆਂ ਹਦਾਇਤਾਂ — UIP Protocol',
+'Prototype only — not clinically validated.':'ਸਿਰਫ਼ ਮੁੱਢਲਾ ਨਮੂਨਾ — ਡਾਕਟਰੀ ਜਾਂਚ ਨਹੀਂ ਹੋਈ।',
+'Do not use this schedule to decide vaccination or catch-up. DOB cannot establish whether a vaccine was given. Verify every dose and eligibility with the MCP card and a government health worker. This app does not automatically receive government updates.':'vaccination ਜਾਂ catch-up ਦਾ ਫ਼ੈਸਲਾ ਇਸ ਸਮਾਂ-ਸਾਰਣੀ ਤੋਂ ਨਾ ਕਰੋ। ਜਨਮ ਮਿਤੀ ਤੋਂ ਪਤਾ ਨਹੀਂ ਲੱਗਦਾ ਕਿ vaccine ਲੱਗਿਆ ਹੈ ਜਾਂ ਨਹੀਂ। ਹਰ dose ਅਤੇ ਯੋਗਤਾ MCP card ਅਤੇ ਸਰਕਾਰੀ ਸਿਹਤ ਕਰਮਚਾਰੀ ਨਾਲ ਜਾਂਚੋ। ਸਰਕਾਰੀ ਅੱਪਡੇਟ ਆਪਣੇ ਆਪ ਨਹੀਂ ਆਉਂਦੇ।'
+}};
+function applyTranslation(){
+ if(selectedLanguage==='en') return;
+ const dict=translations[selectedLanguage];
+ const keys=Object.keys(dict).sort((a,b)=>b.length-a.length);
+ const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+ const nodes=[];while(walker.nextNode()) nodes.push(walker.currentNode);
+ for(const n of nodes){if(n.parentElement.closest('script,style,#languageScreen')) continue; let text=n.nodeValue; for(const key of keys) text=text.split(key).join(dict[key]); if(text!==n.nodeValue)n.nodeValue=text;}
+}
+document.getElementById('languageNotice').textContent='Vaccine and medical terms remain in English. Some prototype text is still in English; translations require review.';
+document.getElementById('languageContinue').textContent='Continue / जारी रखें / ਅੱਗੇ ਜਾਓ →';
+document.getElementById('languageContinue').addEventListener('click',()=>{selectedLanguage=languageChoice.value;document.documentElement.lang=selectedLanguage;document.getElementById('languageScreen').style.display='none';applyTranslation()});
+const translationObserver=new MutationObserver(()=>{translationObserver.disconnect();applyTranslation();translationObserver.observe(document.body,{childList:true,subtree:true,characterData:true})});
+translationObserver.observe(document.body,{childList:true,subtree:true,characterData:true});
+// ---------- UIP SCHEDULE DEFINITION (strictly Govt. of India NIS) ----------
+const SCHEDULE = [
+  // Birth
+  {id:'bcg', visit:'At Birth', visitSub:'Within 24 hours • Before discharge', vaccine:'BCG', desc:'Tuberculosis (TB meningitis / miliary TB)', dose:'0.05 mL (<1 yr) • Intradermal • Left upper arm', type:'days', due:0, grace:30, upper:'Up to 1 year', je:false},
+  {id:'opv0', visit:'At Birth', visitSub:'Within 24 hours • Before discharge', vaccine:'OPV-0 (Zero Dose)', desc:'Polio', dose:'2 drops • Oral • Mouth', type:'days', due:0, grace:15, upper:'Up to 15 days', je:false},
+  {id:'hepb0', visit:'At Birth', visitSub:'Within 24 hours • Before discharge', vaccine:'Hepatitis B — Birth Dose', desc:'Hepatitis B (prevents mother-to-child transmission)', dose:'0.5 mL • IM • Anterolateral left mid-thigh', type:'days', due:0, grace:1, upper:'As early as possible', je:false},
+  // 6 weeks
+  {id:'opv1', visit:'6 Weeks', visitSub:'1½ months', vaccine:'OPV-1', desc:'Polio', dose:'2 drops • Oral', type:'days', due:42, grace:30, upper:'Up to 5 years', je:false},
+  {id:'penta1', visit:'6 Weeks', visitSub:'1½ months', vaccine:'Pentavalent-1', desc:'Diphtheria + Pertussis + Tetanus + Hep B + Hib', dose:'0.5 mL • IM • Left mid-thigh', type:'days', due:42, grace:30, upper:'Up to 1 year', je:false},
+  {id:'rvv1', visit:'6 Weeks', visitSub:'1½ months', vaccine:'Rotavirus-1 (RVV)', desc:'Severe diarrhoea / dehydration', dose:'5 drops • Oral • Mouth', type:'days', due:42, grace:30, upper:'1st dose up to 1 year (UIP)', je:false},
+  {id:'fipv1', visit:'6 Weeks', visitSub:'1½ months', vaccine:'fIPV-1 (Fractional IPV)', desc:'Polio (injected, prevents paralysis)', dose:'0.1 mL • Intradermal • Right upper arm', type:'days', due:42, grace:30, upper:'As per UIP', je:false},
+  {id:'pcv1', visit:'6 Weeks', visitSub:'1½ months', vaccine:'PCV-1', desc:'Pneumonia, meningitis, sepsis', dose:'0.5 mL • IM • Right mid-thigh', type:'days', due:42, grace:30, upper:'Up to 5 years', je:false},
+  // 10 weeks
+  {id:'opv2', visit:'10 Weeks', visitSub:'2½ months', vaccine:'OPV-2', desc:'Polio', dose:'2 drops • Oral', type:'days', due:70, grace:30, upper:'Up to 5 years', je:false},
+  {id:'penta2', visit:'10 Weeks', visitSub:'2½ months', vaccine:'Pentavalent-2', desc:'DPT + Hep B + Hib', dose:'0.5 mL • IM • Left mid-thigh', type:'days', due:70, grace:30, upper:'Up to 1 year', je:false},
+  {id:'rvv2', visit:'10 Weeks', visitSub:'2½ months', vaccine:'Rotavirus-2 (RVV)', desc:'Severe diarrhoea', dose:'5 drops • Oral', type:'days', due:70, grace:30, upper:'Complete series 4 wks apart', je:false},
+  // 14 weeks
+  {id:'opv3', visit:'14 Weeks', visitSub:'3½ months', vaccine:'OPV-3', desc:'Polio', dose:'2 drops • Oral', type:'days', due:98, grace:30, upper:'Up to 5 years', je:false},
+  {id:'penta3', visit:'14 Weeks', visitSub:'3½ months', vaccine:'Pentavalent-3', desc:'DPT + Hep B + Hib', dose:'0.5 mL • IM • Left mid-thigh', type:'days', due:98, grace:30, upper:'Up to 1 year', je:false},
+  {id:'rvv3', visit:'14 Weeks', visitSub:'3½ months', vaccine:'Rotavirus-3 (RVV)', desc:'Severe diarrhoea', dose:'5 drops • Oral', type:'days', due:98, grace:30, upper:'Complete series 4 wks apart', je:false},
+  {id:'fipv2', visit:'14 Weeks', visitSub:'3½ months', vaccine:'fIPV-2 (Fractional IPV)', desc:'Polio', dose:'0.1 mL • Intradermal • Right upper arm', type:'days', due:98, grace:30, upper:'As per UIP', je:false},
+  {id:'pcv2', visit:'14 Weeks', visitSub:'3½ months', vaccine:'PCV-2', desc:'Pneumonia, meningitis', dose:'0.5 mL • IM • Right mid-thigh', type:'days', due:98, grace:30, upper:'Up to 5 years', je:false},
+  // 9-12 months
+  {id:'mr1', visit:'9–12 Months', visitSub:'9 completed months', vaccine:'MR-1 (Measles-Rubella)', desc:'Measles + Rubella (CRS prevention)', dose:'0.5 mL • Subcutaneous • Right upper arm', type:'months', due:9, windowEnd:12, upper:'Up to 5 years', je:false},
+  {id:'je1', visit:'9–12 Months', visitSub:'9 completed months • Endemic districts only', vaccine:'JE-1 (Japanese Encephalitis)', desc:'Japanese Encephalitis (brain fever)', dose:'0.5 mL • Subcutaneous • Left upper arm', type:'months', due:9, windowEnd:12, upper:'Up to 15 years', je:true},
+  {id:'pcvb', visit:'9–12 Months', visitSub:'9 completed months', vaccine:'PCV Booster', desc:'Pneumonia, meningitis', dose:'0.5 mL • IM • Right mid-thigh', type:'months', due:9, windowEnd:12, upper:'Up to 5 years', je:false},
+  {id:'fipv3', visit:'9–12 Months', visitSub:'9 completed months', vaccine:'fIPV-3 (Fractional IPV)', desc:'Polio', dose:'0.1 mL • Intradermal • Right upper arm', type:'months', due:9, windowEnd:12, upper:'As per UIP (added Jan 2023)', je:false},
+  {id:'vita1', visit:'9–12 Months', visitSub:'9 completed months', vaccine:'Vitamin A — Dose 1', desc:'Vitamin A deficiency, blindness, immunity', dose:'1 lakh IU • Oral', type:'months', due:9, windowEnd:12, upper:'Till 5 years', je:false},
+  // 16-24 months
+  {id:'mr2', visit:'16–24 Months', visitSub:'16–24 months window', vaccine:'MR-2 (Measles-Rubella)', desc:'Measles + Rubella', dose:'0.5 mL • Subcutaneous • Right upper arm', type:'months', due:16, windowEnd:24, upper:'Up to 5 years', je:false},
+  {id:'dptb1', visit:'16–24 Months', visitSub:'16–24 months window', vaccine:'DPT Booster-1', desc:'Diphtheria + Pertussis + Tetanus', dose:'0.5 mL • IM • Upper arm / thigh', type:'months', due:16, windowEnd:24, upper:'Up to 7 years', je:false},
+  {id:'opvb', visit:'16–24 Months', visitSub:'16–24 months window', vaccine:'OPV Booster', desc:'Polio', dose:'2 drops • Oral', type:'months', due:16, windowEnd:24, upper:'Up to 5 years', je:false},
+  {id:'je2', visit:'16–24 Months', visitSub:'16–24 months window • Endemic only', vaccine:'JE-2 (Japanese Encephalitis)', desc:'Japanese Encephalitis', dose:'0.5 mL • Subcutaneous • Left upper arm', type:'months', due:16, windowEnd:24, upper:'Up to 15 years', je:true},
+  {id:'vita2', visit:'16–24 Months', visitSub:'16–24 months window', vaccine:'Vitamin A — Dose 2', desc:'Vitamin A deficiency', dose:'2 lakh IU • Oral', type:'months', due:16, windowEnd:24, upper:'Till 5 years', je:false},
+  // Vitamin A every 6 months till 5 years (doses 3-9)
+  {id:'vita3', visit:'Vitamin A (6-monthly)', visitSub:'Till 5 years • Every 6 months', vaccine:'Vitamin A — Dose 3', desc:'Vitamin A deficiency', dose:'2 lakh IU • Oral', type:'months', due:24, windowEnd:30, upper:'Till 5 years', je:false},
+  {id:'vita4', visit:'Vitamin A (6-monthly)', visitSub:'Till 5 years • Every 6 months', vaccine:'Vitamin A — Dose 4', desc:'Vitamin A deficiency', dose:'2 lakh IU • Oral', type:'months', due:30, windowEnd:36, upper:'Till 5 years', je:false},
+  {id:'vita5', visit:'Vitamin A (6-monthly)', visitSub:'Till 5 years • Every 6 months', vaccine:'Vitamin A — Dose 5', desc:'Vitamin A deficiency', dose:'2 lakh IU • Oral', type:'months', due:36, windowEnd:42, upper:'Till 5 years', je:false},
+  {id:'vita6', visit:'Vitamin A (6-monthly)', visitSub:'Till 5 years • Every 6 months', vaccine:'Vitamin A — Dose 6', desc:'Vitamin A deficiency', dose:'2 lakh IU • Oral', type:'months', due:42, windowEnd:48, upper:'Till 5 years', je:false},
+  {id:'vita7', visit:'Vitamin A (6-monthly)', visitSub:'Till 5 years • Every 6 months', vaccine:'Vitamin A — Dose 7', desc:'Vitamin A deficiency', dose:'2 lakh IU • Oral', type:'months', due:48, windowEnd:54, upper:'Till 5 years', je:false},
+  {id:'vita8', visit:'Vitamin A (6-monthly)', visitSub:'Till 5 years • Every 6 months', vaccine:'Vitamin A — Dose 8', desc:'Vitamin A deficiency', dose:'2 lakh IU • Oral', type:'months', due:54, windowEnd:60, upper:'Till 5 years', je:false},
+  {id:'vita9', visit:'Vitamin A (6-monthly)', visitSub:'Till 5 years • Every 6 months', vaccine:'Vitamin A — Dose 9 (Last)', desc:'Vitamin A deficiency', dose:'2 lakh IU • Oral', type:'months', due:58, windowEnd:60, upper:'Till 5 years', je:false},
+  // 5-6 years
+  {id:'dptb2', visit:'5–6 Years', visitSub:'5–6 years window', vaccine:'DPT Booster-2', desc:'Diphtheria + Pertussis + Tetanus', dose:'0.5 mL • IM • Upper arm', type:'years', due:5, windowEnd:6, upper:'Up to 7 years', je:false},
+  // 10 years
+  {id:'td10', visit:'10 Years', visitSub:'10 years', vaccine:'Td', desc:'Tetanus + Adult Diphtheria', dose:'0.5 mL • IM • Upper arm (deltoid)', type:'years', due:10, windowEnd:10, grace:365, upper:'—', je:false},
+  // 16 years
+  {id:'td16', visit:'16 Years', visitSub:'16 years • Final UIP dose', vaccine:'Td', desc:'Tetanus + Adult Diphtheria', dose:'0.5 mL • IM • Upper arm (deltoid)', type:'years', due:16, windowEnd:16, grace:365, upper:'Consult a clinician', je:false},
+];
+
+// ---------- HELPERS ----------
+const $ = s => document.querySelector(s);
+const fmt = d => d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+const fmtLong = d => d.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+function addDays(date, n){ const d=new Date(date); d.setDate(d.getDate()+n); return d; }
+function addMonths(date, n){ const d=new Date(date); const day=d.getDate(); d.setDate(1); d.setMonth(d.getMonth()+n); d.setDate(Math.min(day,new Date(d.getFullYear(),d.getMonth()+1,0).getDate())); return d; }
+function addYears(date, n){ return addMonths(date,n*12); }
+function daysBetween(a,b){ return Math.round((b-a)/86400000); }
+function ageText(dob, today){
+  let y = today.getFullYear()-dob.getFullYear();
+  let m = today.getMonth()-dob.getMonth();
+  let d = today.getDate()-dob.getDate();
+  if(d<0){ m--; const prev=new Date(today.getFullYear(), today.getMonth(), 0); d+=prev.getDate(); }
+  if(m<0){ y--; m+=12; }
+  if(y<0) return '—';
+  if(y===0 && m===0) return d+' day'+(d===1?'':'s');
+  if(y===0) return m+' month'+(m===1?'':'s')+' '+d+' day'+(d===1?'':'s');
+  return y+' year'+(y===1?'':'s')+' '+m+' month'+(m===1?'':'s');
+}
+function dueDates(item, dob){
+  let due, end;
+  if(item.type==='days'){ due=addDays(dob,item.due); end=addDays(due, item.grace||30); }
+  else if(item.type==='months'){ due=addMonths(dob,item.due); end=addMonths(dob,item.windowEnd); }
+  else { due=addYears(dob,item.due); end=item.windowEnd===item.due ? addDays(due, item.grace||365) : addYears(dob,item.windowEnd); }
+  return {due,end};
+}
+
+// ---------- STATE ----------
+let currentDOB=null, currentFilter='all', modalId=null;
+const dobInput=$('#dob');
+dobInput.max = new Date().toISOString().split('T')[0];
+
+// IndexedDB is local to this browser and origin, not an account or shared database.
+let db=null; const records=new Map();
+function loadRecord(dob){return {...(records.get(dob)||{})};}
+function transactionDone(tx){return new Promise((resolve,reject)=>{tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||new Error('Transaction aborted'));});}
+async function saveRecord(dob,rec){
+ if(!db) throw new Error('Storage unavailable');
+ const tx=db.transaction('records','readwrite');tx.objectStore('records').put({dob, doses:rec});await transactionDone(tx);records.set(dob,{...rec});
+}
+async function deleteRecord(dob){
+ if(!db)throw new Error('Storage unavailable');
+ const tx=db.transaction('records','readwrite');tx.objectStore('records').delete(dob);await transactionDone(tx);records.delete(dob);
+}
+async function initializeStorage(){
+ $('#calcBtn').disabled=true;$('#todayBtn').disabled=true;
+ try{
+  db=await new Promise((resolve,reject)=>{const r=indexedDB.open('bharat-immunization',1);r.onupgradeneeded=()=>r.result.createObjectStore('records',{keyPath:'dob'});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onblocked=()=>reject(new Error('Database blocked'));});
+  const tx=db.transaction('records','readonly');const req=tx.objectStore('records').getAll();
+  const all=await new Promise((resolve,reject)=>{req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});
+  all.forEach(r=>records.set(r.dob,r.doses||{}));
+  // Migrate legacy records only after a successful IndexedDB write.
+  try { for(const key of Object.keys(localStorage).filter(k=>k.startsWith('uip_record_'))){
+    const dob=key.slice('uip_record_'.length);const old=JSON.parse(localStorage.getItem(key)||'{}');
+    if(!records.has(dob)) await saveRecord(dob,old);
+    localStorage.removeItem(key);
+  }}catch(e){console.warn('Legacy record migration incomplete',e);}
+  $('#calcBtn').disabled=false;$('#todayBtn').disabled=false;
+ }catch(e){console.error(e);$('#dobError').textContent='Storage could not be opened. Enable browser storage or try another browser. No records can be saved.';}
+}
+
+function getStatus(item, dob, today, givenDateStr){
+  const {due,end}=dueDates(item,dob);
+  if(givenDateStr){
+    const g=new Date(givenDateStr+'T00:00:00');
+    const late = false;
+    const delay = daysBetween(end,g);
+    return {status: late?'late':'given', due, end, given:g, delay};
+  }
+  if(today<due) return {status:'upcoming', due, end, daysLeft:daysBetween(today,due)};
+  if(today<=end) return {status:'due', due, end, daysOverdue:daysBetween(due,today)};
+  return {status:'overdue', due, end, daysOverdue:daysBetween(end,today)};
+}
+
+function render(){
+  if(!currentDOB) return;
+  const today=new Date(); today.setHours(0,0,0,0);
+  const dobStr=dobInput.value;
+  const rec=loadRecord(dobStr);
+  const jeOn=$('#jeToggle').checked;
+  const items=SCHEDULE.filter(it=> jeOn || !it.je);
+
+  // summary
+  let given=0,dueN=0,over=0,up=0;
+  const enriched=items.map(it=>{
+    const st=getStatus(it,currentDOB,today,rec[it.id]);
+    if(st.status==='given'||st.status==='late') given++;
+    else if(st.status==='due') dueN++;
+    else if(st.status==='overdue') over++;
+    else up++;
+    return {...it, ...st, markedMissed: !!(rec._missed && rec._missed[it.id])};
+  });
+
+  $('#ageText').textContent=ageText(currentDOB,today);
+  $('#dobText').textContent=(rec._gender||'')+' • DOB: '+fmtLong(currentDOB);
+  $('#stTotal').textContent=items.length;
+  $('#stGiven').textContent=given;
+  $('#stDue').textContent=dueN;
+  $('#stOver').textContent=over;
+  $('#stUp').textContent=up;
+  const cov=items.length? Math.round(given/items.length*100):0;
+  $('#covText').textContent=cov+'% ('+given+'/'+items.length+')';
+  $('#covBar').style.width=cov+'%';
+
+  // next due
+  const next=enriched.filter(e=>e.status!=='given'&&e.status!=='late').sort((a,b)=>a.due-b.due)[0];
+  if(next){
+    $('#nextText').textContent=next.vaccine;
+    $('#nextSub').textContent='Due: '+fmt(next.due)+' • '+next.visit;
+  } else {
+    $('#nextText').textContent='All UIP doses completed 🎉';
+    $('#nextSub').textContent='Keep MCP card safe. Consult a health worker about adult vaccination.';
+  }
+
+  // alert
+  const ab=$('#alertBox');
+  if(over>0){
+    ab.innerHTML='<div class="alert alert-red">⚠️ <b>'+over+' vaccine(s) past due and not recorded.</b> This does not establish that doses were missed. Check the MCP card with a health worker to determine what is needed.</div>';
+  } else if(dueN>0){
+    ab.innerHTML='<div class="alert alert-amber">⏰ <b>'+dueN+' vaccine(s) due now.</b> Visit your Govt. immunization centre within the UIP window. Mild cold is not a reason to delay.</div>';
+  } else if(given===items.length){
+    ab.innerHTML='<div class="alert alert-green">✅ <b>All UIP vaccines completed as per schedule.</b> Keep the MCP card safe. Consult a health worker about adult vaccination.</div>';
+  } else {
+    ab.innerHTML='<div class="alert alert-green">✅ <b>No overdue vaccines.</b> Next due date is shown below. You can mark vaccines as given after each Govt. hospital visit.</div>';
+  }
+
+  // Narrow educational check only; it is not a validated catch-up engine.
+  const spacing=$('#spacingReview'); spacing.replaceChildren();
+  const liveInjectable=enriched.filter(e=>['bcg','mr1','mr2','je1','je2'].includes(e.id) && rec[e.id]);
+  const conflicts=[];
+  for(let i=0;i<liveInjectable.length;i++) for(let j=i+1;j<liveInjectable.length;j++){
+    const a=liveInjectable[i], b=liveInjectable[j];
+    const da=new Date(rec[a.id]+'T00:00:00'), db=new Date(rec[b.id]+'T00:00:00');
+    const gap=Math.abs(daysBetween(da,db));
+    if(gap>0 && gap<28) conflicts.push(a.vaccine+' and '+b.vaccine+' ('+gap+' days apart)');
+  }
+  if(rec.bcg || conflicts.length){
+    const note=document.createElement('div');note.className='alert alert-amber';
+    let text='Spacing information — review with a health worker. Under published NHM guidance, two live injectable vaccines can be given on the same day; if given on different days, a minimum 28-day interval applies. This does not mean waiting 28 days after BCG for every vaccine. OPV and Rotavirus are oral; Pentavalent, fIPV and PCV are non-live. Their age and vaccine-series intervals still need checking. ';
+    if(conflicts.length) text+='Recorded dates to review: '+conflicts.join('; ')+'. Do not assume a dose is invalid or repeat it without clinical advice. ';
+    text+='This prototype does not calculate a personalised catch-up schedule and does not check all products, contraindications or spacing rules.';
+    note.textContent=text;spacing.appendChild(note);
+  }
+
+  // filter
+  let filtered=enriched;
+  if(currentFilter==='given') filtered=enriched.filter(e=>e.status==='given'||e.status==='late');
+  else if(currentFilter==='due') filtered=enriched.filter(e=>e.status==='due');
+  else if(currentFilter==='overdue') filtered=enriched.filter(e=>e.status==='overdue');
+  else if(currentFilter==='upcoming') filtered=enriched.filter(e=>e.status==='upcoming');
+
+  // group by visit in order
+  const order=[...new Set(SCHEDULE.map(s=>s.visit))];
+  const list=$('#scheduleList');
+  list.innerHTML='';
+  let any=false;
+  order.forEach(v=>{
+    const group=filtered.filter(e=>e.visit===v);
+    if(!group.length) return;
+    any=true;
+    const div=document.createElement('div');
+    div.className='visit';
+    const first=group[0];
+    div.innerHTML='<div class="visit-head"><div><h3>'+v+'</h3><div class="sub">'+first.visitSub+' • Due: '+fmt(first.due)+(first.end&&first.end.getTime()!==first.due.getTime()?' – '+fmt(first.end):'')+'</div></div><span class="badge b-up">'+group.length+' dose(s)</span></div>';
+    group.forEach(e=>{
+      let badge='', sub='';
+      if(e.status==='given'){ badge='<span class="badge b-given">✅ Recorded as given</span>'; sub='Given on: <b>'+fmt(e.given)+'</b>'; }
+      else if(e.status==='late'){ badge='<span class="badge b-late">✅ Given — Late ('+e.delay+' days after window)</span>'; sub='Given on: <b>'+fmt(e.given)+'</b> • Window ended '+fmt(e.end); }
+      else if(e.status==='due'){ badge='<span class="badge b-due">⏰ Due Now</span>'; sub='Due: <b>'+fmt(e.due)+'</b> • Timing needs clinical confirmation'; }
+      else if(e.status==='overdue'){ badge='<span class="badge b-over">⚠️ Past due • not recorded — '+e.daysOverdue+' days</span>'; sub='Was due: <b>'+fmt(e.due)+'</b> • Discuss eligibility with a health worker'; }
+      else { badge='<span class="badge b-up">🔜 Upcoming — in '+e.daysLeft+' days</span>'; sub='Due on: <b>'+fmt(e.due)+'</b>'; }
+      if(e.markedMissed && !e.given) badge+='<br><span class="badge b-over">Parent recorded: missed / not given</span>';
+      const row=document.createElement('div');
+      row.className='vrow';
+      row.innerHTML=
+        '<div><div class="vname">'+e.vaccine+'</div><div class="vdesc">Protects against: '+e.desc+'</div><div class="small">'+'Confirm details with a health worker'+'</div></div>'+
+        '<div class="vdate">'+sub+'</div>'+
+        '<div>'+badge+'</div>'+
+        '<div><button class="btn btn-green btn-small" data-id="'+e.id+'">Mark Given</button></div>';
+      div.appendChild(row);
+    });
+    list.appendChild(div);
+  });
+  $('#emptyState').style.display=any?'none':'block';
+  $('#scheduleSection').style.display='block';
+  $('#summaryBox').style.display='block';
+}
+
+// ---------- EVENTS ----------
+$('#calcBtn').addEventListener('click',async()=>{
+  const v=dobInput.value;
+  $('#dobError').textContent='';
+  const gender=$('#childGender').value;
+  if(!gender){ $('#dobError').textContent='Please select gender.'; return; }
+  if(!v){ $('#dobError').textContent='Please enter Date of Birth.'; return; }
+  const dob=new Date(v+'T00:00:00');
+  const today=new Date(); today.setHours(0,0,0,0);
+  if(dob>today){ $('#dobError').textContent='DOB cannot be in the future.'; return; }
+  const record=loadRecord(v);
+  delete record._name; // Drop any name saved by an earlier version of this page.
+  record._gender=gender;
+  try { await saveRecord(v,record); } catch(e){ $('#dobError').textContent='Could not save the record. Check browser storage and try again.'; return; }
+  currentDOB=dob;
+  render();
+  openHistory();
+});
+$('#todayBtn').addEventListener('click',()=>{
+  dobInput.value=new Date().toISOString().split('T')[0];
+  $('#calcBtn').click();
+});
+
+$('#jeToggle').addEventListener('change',render);
+document.querySelectorAll('.chip[data-filter]').forEach(ch=>{
+  ch.addEventListener('click',()=>{
+    document.querySelectorAll('.chip[data-filter]').forEach(c=>c.classList.remove('active'));
+    ch.classList.add('active');
+    currentFilter=ch.dataset.filter;
+    render();
+  });
+});
+$('#printBtn').addEventListener('click',()=>window.print());
+$('#resetBtn').addEventListener('click',async()=>{
+  if(!currentDOB) return;
+  if(confirm('Clear all “Given” marks for this DOB? This cannot be undone.')){
+    try { await deleteRecord(dobInput.value); render(); } catch(e){ alert('Could not delete the record. Please try again.'); }
+  }
+});
+
+// Calendar reminders are user-imported; no background notification service is required.
+let reminderDate=null;
+$('#reminderBtn').addEventListener('click',()=>{
+ if(!currentDOB)return;
+ const today=new Date();today.setHours(0,0,0,0);
+ const rec=loadRecord(dobInput.value);
+ const dates=SCHEDULE.filter(it=>!it.id.startsWith('vita')&&(!it.je||$('#jeToggle').checked)&&!rec[it.id]).map(it=>dueDates(it,currentDOB).due).filter(d=>d>=today).sort((a,b)=>a-b);
+ reminderDate=dates[0]||null;
+ $('#reminderDetails').textContent=reminderDate?'Next unrecorded routine date: '+fmtLong(reminderDate)+'.':'No upcoming unrecorded routine date was found. For past dates, ask a health worker about the next visit.';
+ $('#downloadReminder').disabled=!reminderDate;
+ $('#reminderModal').classList.add('open');
+});
+$('#closeReminder').addEventListener('click',()=>$('#reminderModal').classList.remove('open'));
+$('#downloadReminder').addEventListener('click',()=>{
+ if(!reminderDate)return;
+ const asDate=d=>String(d.getFullYear())+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+ const end=addDays(reminderDate,1);
+ const stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+ const uid=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(36).slice(2))+'@immunization-reminder';
+ const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Immunization Tracker//Calendar Reminder//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:'+uid,'DTSTAMP:'+stamp,'DTSTART;VALUE=DATE:'+asDate(reminderDate),'DTEND;VALUE=DATE:'+asDate(end),'SUMMARY:Health visit reminder','DESCRIPTION:Confirm the routine visit date with your health worker. This is not a catch-up recommendation.','BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Health visit reminder','TRIGGER:-P1D','END:VALARM','END:VEVENT','END:VCALENDAR',''];
+ const blob=new Blob([lines.join('\r\n')],{type:'text/calendar;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='health-visit-reminder.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
+});
+
+// Review recorded vaccinations after DOB entry; no record is inferred from DOB.
+function openHistory(){
+ if(!currentDOB)return;
+ const today=new Date();today.setHours(0,0,0,0);
+ const rec=loadRecord(dobInput.value);
+ const list=$('#historyList'); list.innerHTML='';
+ const todayString=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+ const relevant=SCHEDULE.filter(it=>dueDates(it,currentDOB).due<=today && (!it.je || $('#jeToggle').checked));
+ if(!relevant.length) list.textContent='No routine doses have reached their scheduled date yet.';
+ relevant.forEach(it=>{
+   const row=document.createElement('div'); row.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center;border-top:1px solid #eee;padding:9px 0';
+   const label=document.createElement('label');label.textContent=it.vaccine+' • '+it.visit;label.htmlFor='history-'+it.id;
+   const input=document.createElement('input');input.type='date';input.id='history-'+it.id;input.dataset.historyId=it.id;input.min=dobInput.value;input.max=todayString;input.value=rec[it.id]||'';input.style.margin='0';
+   const missedLabel=document.createElement('label');missedLabel.style.cssText='grid-column:1/-1;display:flex;align-items:center;gap:8px;font-weight:500';
+   const check=document.createElement('input');check.type='checkbox';check.dataset.missedId=it.id;check.checked=!!(rec._missed&&rec._missed[it.id]);check.style.cssText='width:auto;margin:0';
+   missedLabel.append(check,document.createTextNode('Missed / not given (only if known)'));
+   row.append(label,input,missedLabel);list.appendChild(row);
+ });
+ $('#historyError').textContent='';$('#historyModal').classList.add('open');
+}
+$('#reviewHistory').addEventListener('click',openHistory);
+$('#skipHistory').addEventListener('click',()=>{$('#historyModal').classList.remove('open')});
+$('#saveHistory').addEventListener('click',async()=>{
+ const inputs=[...document.querySelectorAll('[data-history-id]')];
+ if(inputs.some(i=>i.value&&(i.value<i.min||i.value>i.max))){$('#historyError').textContent='Each date must be between the date of birth and today.';return;}
+ const rec=loadRecord(dobInput.value);
+ const checks=[...document.querySelectorAll('[data-missed-id]')];
+ if(inputs.some(i=>i.value&&checks.find(c=>c.dataset.missedId===i.dataset.historyId)?.checked)){ $('#historyError').textContent='For each dose, enter a given date OR mark it missed, not both.';return; }
+ rec._missed={...(rec._missed||{})};
+ inputs.forEach(i=>{const checked=checks.find(c=>c.dataset.missedId===i.dataset.historyId).checked;
+   if(i.value){rec[i.dataset.historyId]=i.value;delete rec._missed[i.dataset.historyId];}
+   else if(checked){delete rec[i.dataset.historyId];rec._missed[i.dataset.historyId]=true;}
+   else delete rec._missed[i.dataset.historyId];
+ });
+ try { await saveRecord(dobInput.value,rec);$('#historyModal').classList.remove('open');render(); } catch(e){$('#historyError').textContent='Could not save. Check browser storage and try again.';}
+});
+
+// modal
+const modal=$('#givenModal');
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-id]');
+  if(btn){
+    modalId=btn.dataset.id;
+    const item=SCHEDULE.find(s=>s.id===modalId);
+    $('#modalTitle').textContent='Mark as Given — '+item.vaccine;
+    $('#modalSub').textContent=item.visit+' • '+item.dose;
+    const todayStr=new Date().toISOString().split('T')[0];
+    $('#givenDate').value=todayStr;
+    $('#givenDate').max=todayStr;
+    modal.classList.add('open');
+  }
+});
+$('#cancelGiven').addEventListener('click',()=>modal.classList.remove('open'));
+modal.addEventListener('click',e=>{ if(e.target===modal) modal.classList.remove('open'); });
+$('#saveGiven').addEventListener('click',async()=>{
+  const gv=$('#givenDate').value;
+  if(!gv || gv<dobInput.value || gv>$('#givenDate').max){ alert('Enter a date between birth and today.'); return; }
+  const dobStr=dobInput.value;
+  const rec=loadRecord(dobStr);
+  rec[modalId]=gv;
+  if(rec._missed) delete rec._missed[modalId];
+  try { await saveRecord(dobStr,rec); modal.classList.remove('open'); render(); } catch(e){ alert('Could not save the record. Check browser storage and try again.'); }
+});
+$('#markMissed').addEventListener('click',async()=>{
+ const item=SCHEDULE.find(s=>s.id===modalId); const today=new Date();today.setHours(0,0,0,0);
+ if(dueDates(item,currentDOB).due>today){alert('This routine date has not arrived yet. Do not mark it missed.');return;}
+ if(!confirm('Record this dose as missed / not given? This does not determine catch-up eligibility.'))return;
+ const rec=loadRecord(dobInput.value);delete rec[modalId];rec._missed={...(rec._missed||{}),[modalId]:true};
+ try {await saveRecord(dobInput.value,rec);modal.classList.remove('open');render();}catch(e){alert('Could not save the record. Please try again.');}
+});
+$('#clearGiven').addEventListener('click',async()=>{
+  const dobStr=dobInput.value;
+  const rec=loadRecord(dobStr);
+  delete rec[modalId];
+  if(rec._missed) delete rec._missed[modalId];
+  try { await saveRecord(dobStr,rec); modal.classList.remove('open'); render(); } catch(e){ alert('Could not save the record. Check browser storage and try again.'); }
+});
+
+// Do not silently reopen another child's health record on a shared device.
+[dobInput,$('#childGender')].forEach(el=>el.addEventListener('input',()=>{currentDOB=null;$('#summaryBox').style.display='none';$('#scheduleSection').style.display='none';}));
+initializeStorage();
+</script>
+</body>
+</html>
