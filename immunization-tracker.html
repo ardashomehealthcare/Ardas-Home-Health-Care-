@@ -37,6 +37,11 @@ input[type=date]:focus{outline:none;border-color:var(--teal)}
 .btn-primary{background:var(--saffron);color:#fff;width:100%}
 .btn-primary:hover{background:var(--saffron-dark)}
 .btn-outline{background:#fff;border:2px solid var(--border);color:var(--navy)}
+.btn-reminder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;margin:16px 0;padding:18px 22px;border:3px solid #592823;border-radius:14px;background:linear-gradient(135deg,#8a2f2b,#b4552d);color:#fff;text-align:center;font-size:21px;line-height:1.25;box-shadow:0 0 0 4px rgba(180,85,45,.18);animation:reminderPulse 1.8s ease-in-out infinite}
+.btn-reminder span{font-size:14px;font-weight:650}
+.btn-reminder:hover,.btn-reminder:focus-visible{animation-play-state:paused;filter:brightness(1.08);outline:3px solid #f2b134;outline-offset:3px}
+@keyframes reminderPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 4px rgba(180,85,45,.18)}50%{transform:scale(1.015);box-shadow:0 0 0 8px rgba(180,85,45,.3)}}
+@media(prefers-reduced-motion:reduce){.btn-reminder{animation:none}}
 .btn-green{background:var(--green);color:#fff}
 .btn-small{padding:8px 12px;font-size:13px;border-radius:8px}
 .hint{font-size:13px;color:var(--muted);margin-top:8px}
@@ -165,6 +170,7 @@ th{background:#EFF4F8}
       <div id="alertBox"></div>
       <div id="spacingReview" aria-live="polite"></div>
       <div class="alert alert-amber"><b>Next step:</b> Take the MCP card and this list to an ANM or government health worker. Dates shown are routine dates, not a personalised catch-up recommendation. A blank record does not prove a vaccine was missed.</div>
+      <button class="btn btn-reminder no-print" id="reminderBtn" type="button" aria-label="Add the next Monday, Wednesday, or Friday vaccine date to your calendar">📅 Add to calendar reminder<span>Save your next vaccine date to your calendar</span></button>
       <button class="btn btn-outline btn-small no-print" id="reviewHistory" type="button" style="margin-top:10px">Review previous vaccination record</button>
       <div class="toolbar no-print">
         <button class="chip active" data-filter="all">All</button>
@@ -176,7 +182,6 @@ th{background:#EFF4F8}
         <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700">
           <input type="checkbox" id="jeToggle"> Show JE (ask your health worker if applicable)
         </label>
-        <button class="btn btn-outline btn-small" id="reminderBtn" type="button">📅 Add to calendar reminder</button>
         <button class="btn btn-outline btn-small" id="printBtn">🖨️ Print / Save PDF</button>
         <button class="btn btn-outline btn-small" id="resetBtn">↺ Reset Record</button>
       </div>
@@ -594,7 +599,7 @@ $('#reminderBtn').addEventListener('click',()=>{
  if(!currentDOB)return;
  const today=new Date();today.setHours(0,0,0,0);
  const rec=loadRecord(dobInput.value);
- const dates=SCHEDULE.filter(it=>!it.id.startsWith('vita')&&(!it.je||$('#jeToggle').checked)&&!rec[it.id]).map(it=>dueDates(it,currentDOB).due).filter(d=>d>=today).sort((a,b)=>a-b);
+ const dates=SCHEDULE.filter(it=>(!it.je||$('#jeToggle').checked)&&!rec[it.id]).map(it=>dueDates(it,currentDOB).due).filter(d=>d>=today).sort((a,b)=>a-b);
  reminderDate=dates[0]||null;
  $('#reminderDetails').textContent=reminderDate?'Next unrecorded routine date: '+fmtLong(reminderDate)+'.':'No upcoming unrecorded routine date was found. For past dates, ask a health worker about the next visit.';
  $('#downloadReminder').disabled=!reminderDate;
