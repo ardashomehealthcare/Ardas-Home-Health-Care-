@@ -101,7 +101,8 @@ th{background:#EFF4F8}
 .history-entry-option{margin:0 0 14px}
 .card-import .body{display:grid;gap:10px}
 .card-import .body p{margin:0}
-#mcpPhoto{padding:8px;margin:0;min-width:0}
+.mcp-photo-actions{display:flex;flex-wrap:wrap;gap:8px}
+.mcp-photo-actions button{flex:1 1 auto;min-height:44px}
 #mcpDateOrder{max-width:100%;padding:8px;font-size:16px}
 #mcpPreview{display:block;max-width:100%;max-height:38vh;margin:auto;object-fit:contain}
 #mcpPreview[hidden]{display:none}
@@ -262,8 +263,13 @@ th{background:#EFF4F8}
       <summary>📷 Add dates from an MCP card photo</summary>
       <div class="body">
         <p id="mcpPhotoHelp">Choose a clear JPG, PNG or WebP photo (up to 15 MB) of the child’s vaccination section. Crop out names and IDs; for a card with separate visit boxes, scan one box at a time. English vaccine labels and numeric dates with a four-digit year work best. Handwriting may need manual entry.</p>
-        <label for="mcpPhoto">MCP card photo</label>
-        <input type="file" id="mcpPhoto" accept="image/jpeg,image/png,image/webp" aria-describedby="mcpPhotoHelp">
+        <div class="mcp-photo-actions">
+          <button class="btn btn-outline btn-small" type="button" id="takeMcpPhoto" aria-describedby="mcpCameraHelp">Take a photo</button>
+          <button class="btn btn-outline btn-small" type="button" id="chooseMcpPhoto" aria-describedby="mcpPhotoHelp">Choose an existing photo</button>
+        </div>
+        <input type="file" id="mcpCamera" accept="image/*" capture="environment" hidden>
+        <input type="file" id="mcpPhoto" accept="image/jpeg,image/png,image/webp" hidden>
+        <p class="small" id="mcpCameraHelp">The camera option uses your phone’s rear camera when supported. If it doesn’t open, choose an existing photo or enter the dates manually.</p>
         <img id="mcpPreview" alt="Selected MCP card vaccination section for comparison" hidden>
         <label for="mcpDateOrder">Date format on the card</label>
         <select id="mcpDateOrder">
@@ -701,7 +707,7 @@ $('#downloadReminder').addEventListener('click',()=>{
 
 // Review recorded vaccinations after DOB entry; no record is inferred from DOB.
 let historyDOB='', mcpPreviewUrl=null, mcpScan=null;
-const mcpPhoto=$('#mcpPhoto'), mcpStatus=$('#mcpStatus'), scanMcpPhoto=$('#scanMcpPhoto');
+const mcpCamera=$('#mcpCamera'), mcpPhoto=$('#mcpPhoto'), mcpStatus=$('#mcpStatus'), scanMcpPhoto=$('#scanMcpPhoto');
 function historyToday(){
  const today=new Date();return [today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
 }
@@ -730,7 +736,7 @@ function resetCardPhoto(){
  mcpPreviewUrl=null;mcpStatus.textContent='';scanMcpPhoto.disabled=true;
 }
 function closeHistory(){
- resetCardPhoto();mcpPhoto.value='';historyDOB='';
+ resetCardPhoto();mcpCamera.value='';mcpPhoto.value='';historyDOB='';
  $('#historyModal').classList.remove('open');$('#historyList').replaceChildren();updateCardDateReview();
 }
 function openHistory(){
@@ -765,17 +771,24 @@ $('#manualHistoryEntry').addEventListener('click',()=>{
  (needsReview||blank[0]||fields[0])?.focus();
 });
 
-mcpPhoto.addEventListener('change',()=>{
+// Keep the existing preview when a camera capture or file selection is cancelled.
+$('#takeMcpPhoto').addEventListener('click',()=>mcpCamera.click());
+$('#chooseMcpPhoto').addEventListener('click',()=>mcpPhoto.click());
+function selectCardPhoto(event){
+ const input=event.currentTarget;
+ const file=input.files[0];
+ input.value=''; // Allow selecting the same photo again.
+ if(!file||!historyDOB)return;
  resetCardPhoto();clearCardHints();
- const file=mcpPhoto.files[0];
- if(!file)return;
  if(!['image/jpeg','image/png','image/webp'].includes(file.type)||!file.size||file.size>15*1024*1024){
-   mcpStatus.textContent='Choose a JPG, PNG or WebP photo up to 15 MB.';mcpPhoto.value='';return;
+   mcpStatus.textContent='Choose a JPG, PNG or WebP photo up to 15 MB.';return;
  }
  mcpPreviewUrl=URL.createObjectURL(file);
  const preview=$('#mcpPreview');preview.src=mcpPreviewUrl;preview.hidden=false;
  scanMcpPhoto.disabled=false;
-});
+ mcpStatus.textContent='Photo selected. Tap Read dates from photo to continue.';
+}
+[mcpCamera,mcpPhoto].forEach(input=>input.addEventListener('change',selectCardPhoto));
 // Keep dates entered manually or suggested by earlier photos. Only clear old hints.
 function clearCardHints(){
  $('#historyList').querySelectorAll('.history-scan-note').forEach(note=>{

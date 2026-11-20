@@ -16,7 +16,7 @@ This site is optimised for both traditional search engines and AI assistants:
 
 ## Immunization tracker: MCP card photo import
 
-In `immunization-tracker.html`, open **Review previous vaccination record → Add dates from an MCP card photo**. The static site reads the selected image locally with a self-hosted OCR worker. It does not send or save the photo. Draft dates can be edited or cleared before the user confirms and saves them to the browser's existing record. A date shared by several doses in a visit box is only offered as a per-dose suggestion. **Enter dates manually** is available with or without a photo and jumps to an unreadable date when one is flagged.
+In `immunization-tracker.html`, open **Review previous vaccination record → Add dates from an MCP card photo**. Tap **Take a photo** to request the rear camera on supported devices, or **Choose an existing photo** for the gallery or file picker. The static site reads the selected image locally with a self-hosted OCR worker. It does not send or save the photo. Draft dates can be edited or cleared before the user confirms and saves them to the browser's existing record. A date shared by several doses in a visit box is only offered as a per-dose suggestion. **Enter dates manually** is available with or without a photo and jumps to an unreadable date when one is flagged.
 
 The importer is conservative: it works best with clear English dose labels and four-digit numeric dates. It tries to separate dates actually given from due dates; review every suggestion against the card. Unsupported layouts, unclear handwriting, or ambiguous dates may require manual entry. Use the format selector if the card's date order is known. Once the history is saved, calendar reminders exclude those recorded doses.
 
