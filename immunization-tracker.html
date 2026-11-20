@@ -96,6 +96,18 @@ th{background:#EFF4F8}
 .modal-box{background:#fff;border-radius:16px;max-width:520px;width:100%;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
 .modal-box h3{margin-top:0}
 .modal-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:10px;font-size:16px;margin:8px 0 12px}
+#includeReminderDoses,#confirmCardDates{width:auto;margin:0 6px 0 0}
+.card-import{margin-bottom:8px}
+.history-entry-option{margin:0 0 14px}
+.card-import .body{display:grid;gap:10px}
+.card-import .body p{margin:0}
+#mcpPhoto{padding:8px;margin:0;min-width:0}
+#mcpDateOrder{max-width:100%;padding:8px;font-size:16px}
+#mcpPreview{display:block;max-width:100%;max-height:38vh;margin:auto;object-fit:contain}
+#mcpPreview[hidden]{display:none}
+.history-scan-note{grid-column:1/-1;color:var(--muted);font-size:13px}
+.history-scan-note button{margin-left:8px}
+#cardDateReview{margin:12px 0;padding:10px;background:#FFF6E5;border-radius:8px}
 .empty{text-align:center;padding:28px 16px;color:var(--muted)}
 .kpi-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 .kpi{flex:1;min-width:140px;border:1px solid var(--border);border-radius:12px;padding:12px;background:#F8FAFC}
@@ -225,7 +237,13 @@ th{background:#EFF4F8}
  <div class="modal-box" style="max-height:85vh;overflow:auto;max-width:620px">
   <h3 id="reminderTitle">Add a calendar reminder</h3>
   <p id="reminderDetails"></p>
-  <p>The downloaded <b>.ics</b> file contains an all-day event with a requested reminder one day before. Calendar apps may handle alerts differently; check the alert after importing. The event uses a generic title and does not include the child’s name or vaccination details.</p>
+  <div id="reminderDoseOptions" hidden>
+   <p><strong>Routine doses due on this date</strong></p>
+   <ul id="reminderDoseList"></ul>
+   <label><input type="checkbox" id="includeReminderDoses" aria-describedby="reminderPrivacy"> Include vaccine names and doses in the calendar event details</label>
+   <p class="small" id="reminderPrivacy">Leave this unchecked for a generic reminder. If included, dose details may be visible to anyone with access to your calendar.</p>
+  </div>
+  <p>The downloaded <b>.ics</b> file contains an all-day event with a requested reminder one day before. Calendar apps may handle alerts differently; check the alert after importing. The event title is always generic and the child’s name is not included.</p>
   <h4>Android</h4><ol><li>Tap <b>Download calendar file</b>.</li><li>Open the download and choose a calendar app that supports importing .ics files. If no app offers to import it, use a calendar service’s import feature or another calendar app.</li><li>Check the date and alert, then save. Enable notifications for your calendar app.</li></ol>
   <h4>iPhone</h4><ol><li>Tap <b>Download calendar file</b>, then open it from Downloads or the Files app.</li><li>Tap the event and choose <b>Add to Calendar</b> or <b>Add All</b>; choose a calendar if asked.</li><li>Check the date and alert, then save. Enable Calendar notifications in Settings.</li></ol>
   <p>Steps vary by phone and app. Downloading alone does not save the event. Calendar alerts depend on the phone’s settings. This routine date is not a personalised catch-up recommendation; confirm it with a health worker.</p>
@@ -239,7 +257,30 @@ th{background:#EFF4F8}
     <h3 id="historyTitle">Review the immunization record</h3>
     <p>Use the MCP card or another vaccination record. Enter the actual date for each dose recorded as given. Enter the actual date if given, or select “Missed / not given” only if you know it was not given. Leave both blank if unsure. Blank does not mean missed.</p>
     <p><b>Important:</b> This prototype cannot prescribe catch-up. A health worker must review previous doses, intervals, local guidance and eligibility.</p>
+    <p>Choose a card photo or enter dates manually. You can use both: review any dates found in the photo and type in the ones it could not read.</p>
+    <details class="card-import" id="mcpImport">
+      <summary>📷 Add dates from an MCP card photo</summary>
+      <div class="body">
+        <p id="mcpPhotoHelp">Choose a clear JPG, PNG or WebP photo (up to 15 MB) of the child’s vaccination section. Crop out names and IDs; for a card with separate visit boxes, scan one box at a time. English vaccine labels and numeric dates with a four-digit year work best. Handwriting may need manual entry.</p>
+        <label for="mcpPhoto">MCP card photo</label>
+        <input type="file" id="mcpPhoto" accept="image/jpeg,image/png,image/webp" aria-describedby="mcpPhotoHelp">
+        <img id="mcpPreview" alt="Selected MCP card vaccination section for comparison" hidden>
+        <label for="mcpDateOrder">Date format on the card</label>
+        <select id="mcpDateOrder">
+          <option value="auto">Automatic (skip ambiguous dates)</option>
+          <option value="dmy">Day / Month / Year (DD/MM/YYYY)</option>
+          <option value="mdy">Month / Day / Year (MM/DD/YYYY)</option>
+        </select>
+        <button class="btn btn-outline btn-small" type="button" id="scanMcpPhoto" disabled>Read dates from photo</button>
+        <p class="small">The photo is processed in this browser. It is not uploaded or saved. Only dates you review and save are added to the record.</p>
+        <p id="mcpStatus" role="status" aria-live="polite"></p>
+      </div>
+    </details>
+    <button class="btn btn-outline btn-small history-entry-option" id="manualHistoryEntry" type="button" aria-controls="historyList">Enter dates manually</button>
     <div id="historyList"></div>
+    <div id="cardDateReview" hidden>
+      <label><input type="checkbox" id="confirmCardDates"> I checked the photo-suggested dates and confirmed that each dose was actually given.</label>
+    </div>
     <p id="historyError" style="color:#b42318" role="alert"></p>
     <button class="btn btn-primary" id="saveHistory" type="button">Save record and view schedule</button>
     <button class="btn btn-outline" id="skipHistory" type="button" style="width:100%;margin-top:8px">I don't have the record now</button>
@@ -601,54 +642,221 @@ $('#resetBtn').addEventListener('click',async()=>{
 });
 
 // Calendar reminders are user-imported; no background notification service is required.
-let reminderDate=null;
+function nextRoutineReminder(dob,today,rec,showJE){
+ const pending=SCHEDULE.filter(it=>(showJE||!it.je)&&!rec[it.id])
+   .map(it=>({item:it,due:dueDates(it,dob).due}))
+   .filter(entry=>entry.due>=today)
+   .sort((a,b)=>a.due-b.due);
+ if(!pending.length)return null;
+ const date=pending[0].due;
+ const doses=pending.filter(entry=>entry.due.getTime()===date.getTime())
+   .map(({item})=>item.vaccine==='Td'?'Td ('+item.visit+')':item.vaccine);
+ return {date,doses};
+}
+
+function calendarText(text){
+ return text.replace(/\\/g,'\\\\').replace(/\r\n|\r|\n/g,'\\n').replace(/([,;])/g,'\\$1');
+}
+function foldCalendarLine(line){
+ const encoder=new TextEncoder();
+ let folded='',bytes=0;
+ // Fold by UTF-8 bytes without splitting a Unicode character (RFC 5545).
+ for(const char of line){
+   const size=encoder.encode(char).length;
+   if(bytes+size>75){folded+='\r\n ';bytes=1;}
+   folded+=char;bytes+=size;
+ }
+ return folded;
+}
+
+let reminder=null;
 $('#reminderBtn').addEventListener('click',()=>{
  if(!currentDOB)return;
  const today=new Date();today.setHours(0,0,0,0);
- const rec=loadRecord(dobInput.value);
- const dates=SCHEDULE.filter(it=>(!it.je||$('#jeToggle').checked)&&!rec[it.id]).map(it=>dueDates(it,currentDOB).due).filter(d=>d>=today).sort((a,b)=>a-b);
- reminderDate=dates[0]||null;
- $('#reminderDetails').textContent=reminderDate?'Next unrecorded routine date: '+fmtLong(reminderDate)+'.':'No upcoming unrecorded routine date was found. For past dates, ask a health worker about the next visit.';
- $('#downloadReminder').disabled=!reminderDate;
+ reminder=nextRoutineReminder(currentDOB,today,loadRecord(dobInput.value),$('#jeToggle').checked);
+ $('#reminderDetails').textContent=reminder?'Next unrecorded routine date: '+fmtLong(reminder.date)+'.':'No upcoming unrecorded routine date was found. For past dates, ask a health worker about the next visit.';
+ const list=$('#reminderDoseList');
+ list.textContent='';
+ for(const dose of reminder?.doses||[]){
+   const li=document.createElement('li');li.textContent=dose;list.appendChild(li);
+ }
+ $('#reminderDoseOptions').hidden=!reminder;
+ $('#includeReminderDoses').checked=false;
+ $('#downloadReminder').disabled=!reminder;
  $('#reminderModal').classList.add('open');
 });
 $('#closeReminder').addEventListener('click',()=>$('#reminderModal').classList.remove('open'));
 $('#downloadReminder').addEventListener('click',()=>{
- if(!reminderDate)return;
+ if(!reminder||!currentDOB)return;
+ const {date,doses}=reminder;
  const asDate=d=>String(d.getFullYear())+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
- const end=addDays(reminderDate,1);
+ const end=addDays(date,1);
  const stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
  const uid=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(36).slice(2))+'@immunization-reminder';
- const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Immunization Tracker//Calendar Reminder//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:'+uid,'DTSTAMP:'+stamp,'DTSTART;VALUE=DATE:'+asDate(reminderDate),'DTEND;VALUE=DATE:'+asDate(end),'SUMMARY:Health visit reminder','DESCRIPTION:Confirm the routine visit date with your health worker. This is not a catch-up recommendation.','BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Health visit reminder','TRIGGER:-P1D','END:VALARM','END:VEVENT','END:VCALENDAR',''];
- const blob=new Blob([lines.join('\r\n')],{type:'text/calendar;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='health-visit-reminder.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
+ const guidance='Confirm the routine visit date with your health worker. This is not a catch-up recommendation.';
+ const description=$('#includeReminderDoses').checked?'Routine doses due: '+doses.join(', ')+'.\n'+guidance:guidance;
+ const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Immunization Tracker//Calendar Reminder//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:'+uid,'DTSTAMP:'+stamp,'DTSTART;VALUE=DATE:'+asDate(date),'DTEND;VALUE=DATE:'+asDate(end),'SUMMARY:Health visit reminder','DESCRIPTION:'+calendarText(description),'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Health visit reminder','TRIGGER:-P1D','END:VALARM','END:VEVENT','END:VCALENDAR',''];
+ const blob=new Blob([lines.map(foldCalendarLine).join('\r\n')],{type:'text/calendar;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='health-visit-reminder.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
 });
 
 // Review recorded vaccinations after DOB entry; no record is inferred from DOB.
+let historyDOB='', mcpPreviewUrl=null, mcpScan=null;
+const mcpPhoto=$('#mcpPhoto'), mcpStatus=$('#mcpStatus'), scanMcpPhoto=$('#scanMcpPhoto');
+function historyToday(){
+ const today=new Date();return [today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+}
+function updateCardDateReview(){
+ const hasDraftDates=[...$('#historyList').querySelectorAll('[data-card-date]')].some(input=>input.value);
+ $('#cardDateReview').hidden=!hasDraftDates;
+ $('#confirmCardDates').checked=false;
+}
+function addHistoryRow(it,rec,todayString){
+ const row=document.createElement('div'); row.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center;border-top:1px solid #eee;padding:9px 0';
+ const label=document.createElement('label');label.textContent=it.vaccine+' • '+it.visit;label.htmlFor='history-'+it.id;
+ const input=document.createElement('input');input.type='date';input.id='history-'+it.id;input.dataset.historyId=it.id;input.min=historyDOB;input.max=todayString;input.value=rec[it.id]||'';input.style.margin='0';
+ input.addEventListener('input',()=>{if(input.hasAttribute('data-card-date'))updateCardDateReview();});
+ const missedLabel=document.createElement('label');missedLabel.style.cssText='grid-column:1/-1;display:flex;align-items:center;gap:8px;font-weight:500';
+ const check=document.createElement('input');check.type='checkbox';check.id='history-missed-'+it.id;check.dataset.missedId=it.id;check.checked=!!rec._missed?.[it.id];check.style.cssText='width:auto;margin:0';
+ missedLabel.append(check,document.createTextNode('Missed / not given (only if known)'));
+ const note=document.createElement('div');note.id='history-scan-'+it.id;note.className='history-scan-note';note.hidden=true;
+ input.setAttribute('aria-describedby',note.id);
+ row.append(label,input,missedLabel,note);$('#historyList').appendChild(row);
+ return input;
+}
+function resetCardPhoto(){
+ mcpScan?.abort();mcpScan=null;
+ const preview=$('#mcpPreview');preview.hidden=true;preview.removeAttribute('src');
+ if(mcpPreviewUrl)URL.revokeObjectURL(mcpPreviewUrl);
+ mcpPreviewUrl=null;mcpStatus.textContent='';scanMcpPhoto.disabled=true;
+}
+function closeHistory(){
+ resetCardPhoto();mcpPhoto.value='';historyDOB='';
+ $('#historyModal').classList.remove('open');$('#historyList').replaceChildren();updateCardDateReview();
+}
 function openHistory(){
  if(!currentDOB)return;
+ closeHistory();historyDOB=dobInput.value;
+ $('#mcpImport').open=false;$('#mcpDateOrder').value='auto';
  const today=new Date();today.setHours(0,0,0,0);
- const rec=loadRecord(dobInput.value);
- const list=$('#historyList'); list.innerHTML='';
- const todayString=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
- const relevant=SCHEDULE.filter(it=>dueDates(it,currentDOB).due<=today && (!it.je || $('#jeToggle').checked));
- if(!relevant.length) list.textContent='No routine doses have reached their scheduled date yet.';
- relevant.forEach(it=>{
-   const row=document.createElement('div'); row.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center;border-top:1px solid #eee;padding:9px 0';
-   const label=document.createElement('label');label.textContent=it.vaccine+' • '+it.visit;label.htmlFor='history-'+it.id;
-   const input=document.createElement('input');input.type='date';input.id='history-'+it.id;input.dataset.historyId=it.id;input.min=dobInput.value;input.max=todayString;input.value=rec[it.id]||'';input.style.margin='0';
-   const missedLabel=document.createElement('label');missedLabel.style.cssText='grid-column:1/-1;display:flex;align-items:center;gap:8px;font-weight:500';
-   const check=document.createElement('input');check.type='checkbox';check.dataset.missedId=it.id;check.checked=!!(rec._missed&&rec._missed[it.id]);check.style.cssText='width:auto;margin:0';
-   missedLabel.append(check,document.createTextNode('Missed / not given (only if known)'));
-   row.append(label,input,missedLabel);list.appendChild(row);
- });
+ const rec=loadRecord(historyDOB);
+ const list=$('#historyList');
+ const todayString=historyToday();
+ const relevant=SCHEDULE.filter(it=>(!it.je||$('#jeToggle').checked)&&(rec[it.id]||dueDates(it,currentDOB).due<=today));
+ if(!relevant.length){ const empty=document.createElement('p');empty.id='historyEmpty';empty.textContent='No routine doses have reached their scheduled date yet.';list.appendChild(empty); }
+ relevant.forEach(it=>addHistoryRow(it,rec,todayString));
  $('#historyError').textContent='';$('#historyModal').classList.add('open');
 }
 $('#reviewHistory').addEventListener('click',openHistory);
-$('#skipHistory').addEventListener('click',()=>{$('#historyModal').classList.remove('open')});
+$('#skipHistory').addEventListener('click',closeHistory);
+$('#manualHistoryEntry').addEventListener('click',()=>{
+ if(!historyDOB)return;
+ const list=$('#historyList');
+ // Show birth-dose fields even when the tracker has shifted the first routine
+ // reminder to a later clinic day. Actual history does not depend on that shift.
+ const missingBirthDoses=SCHEDULE.filter(it=>it.type==='days'&&it.due===0&&!$('#history-'+it.id));
+ if(missingBirthDoses.length){
+   $('#historyEmpty')?.remove();
+   const rec=loadRecord(historyDOB),today=historyToday();
+   missingBirthDoses.forEach(it=>addHistoryRow(it,rec,today));
+ }
+ const fields=[...list.querySelectorAll('[data-history-id]')];
+ const blank=fields.filter(input=>!input.value&&!$('#history-missed-'+input.dataset.historyId).checked);
+ const needsReview=blank.find(input=>$('#history-scan-'+input.dataset.historyId).hasAttribute('data-needs-review'));
+ (needsReview||blank[0]||fields[0])?.focus();
+});
+
+mcpPhoto.addEventListener('change',()=>{
+ resetCardPhoto();clearCardHints();
+ const file=mcpPhoto.files[0];
+ if(!file)return;
+ if(!['image/jpeg','image/png','image/webp'].includes(file.type)||!file.size||file.size>15*1024*1024){
+   mcpStatus.textContent='Choose a JPG, PNG or WebP photo up to 15 MB.';mcpPhoto.value='';return;
+ }
+ mcpPreviewUrl=URL.createObjectURL(file);
+ const preview=$('#mcpPreview');preview.src=mcpPreviewUrl;preview.hidden=false;
+ scanMcpPhoto.disabled=false;
+});
+// Keep dates entered manually or suggested by earlier photos. Only clear old hints.
+function clearCardHints(){
+ $('#historyList').querySelectorAll('.history-scan-note').forEach(note=>{
+   const input=note.parentElement.querySelector('[data-history-id]');
+   note.textContent=input.value&&input.hasAttribute('data-card-date')?'From photo — verify or edit.':'';
+   note.hidden=!note.textContent;note.removeAttribute('data-needs-review');
+ });
+}
+function showCardDrafts(results,dob,today){
+ const rec=loadRecord(dob);
+ clearCardHints();
+ let filled=0,shared=0;
+ for(const result of results){
+   const it=SCHEDULE.find(item=>item.id===result.id);
+   if(!it||(it.je&&!$('#jeToggle').checked))continue;
+   let input=$('#history-'+it.id);
+   if(!input){
+     if(!result.date)continue;
+     $('#historyEmpty')?.remove();input=addHistoryRow(it,rec,today);
+   }
+   const note=$('#history-scan-'+it.id), missed=$('#history-missed-'+it.id);
+   if(input.value||missed.checked){
+     if(result.date&&(input.value!==result.date||missed.checked)){
+       note.textContent='Photo suggests '+result.date+'; your existing entry was not changed.';note.hidden=false;
+     }
+     continue;
+   }
+   note.hidden=false;
+   const apply=()=>{
+     if(input.value||missed.checked)return false;
+     input.value=result.date;input.dataset.cardDate='';
+     note.textContent='From photo — verify or edit.';updateCardDateReview();return true;
+   };
+   if(!result.date){
+     note.textContent='Needs review — no clear date given was found. Enter it manually if known.';note.dataset.needsReview='';
+   }else if(result.shared){
+     shared++;
+     note.textContent='Visit date '+result.date+'. Use it only if the card confirms this dose was given.';
+     const use=document.createElement('button');use.type='button';use.className='btn btn-outline btn-small';
+     use.textContent='Use date';use.setAttribute('aria-label','Use '+result.date+' for '+it.vaccine+' ('+it.visit+')');
+     use.addEventListener('click',()=>{if(apply())input.focus();});note.appendChild(use);
+   }else if(apply())filled++;
+ }
+ const summary=[];
+ if(filled)summary.push(filled+(filled===1?' date was':' dates were')+' filled in for your review.');
+ if(shared)summary.push('A visit date is available below. Choose it only for doses the card confirms.');
+ mcpStatus.textContent=summary.length?summary.join(' '):'No new dates could be filled in. Check the card and enter the actual dates manually, or try a clearer photo or a different date format.';
+}
+scanMcpPhoto.addEventListener('click',async()=>{
+ if(!historyDOB||!mcpPreviewUrl||mcpScan)return;
+ const dob=historyDOB,today=historyToday(),order=$('#mcpDateOrder').value;
+ const controller=new AbortController();mcpScan=controller;
+ scanMcpPhoto.disabled=true;mcpStatus.textContent='Reading the photo on this device… The first scan may take a moment.';
+ const timeout=setTimeout(()=>controller.abort(new Error('Scan timed out')),60000);
+ try{
+   const preview=$('#mcpPreview');await preview.decode();
+   if(controller.signal.aborted)throw controller.signal.reason;
+   // Read the decoded, upright raster, not the file metadata. Limit memory on phones.
+   const scale=Math.min(1,2600/Math.max(preview.naturalWidth,preview.naturalHeight));
+   const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(preview.naturalWidth*scale));canvas.height=Math.max(1,Math.round(preview.naturalHeight*scale));
+   const ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(preview,0,0,canvas.width,canvas.height);
+   const image=await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Could not read photo')),'image/png'));
+   canvas.width=canvas.height=0;
+   const {scanCardImage,readCardDates}=await import('./assets/mcp-ocr/read-card.mjs');
+   const tsv=await scanCardImage(image,controller.signal);
+   if(mcpScan!==controller||dob!==historyDOB)return;
+   showCardDrafts(readCardDates(tsv,{min:dob,max:today,order}),dob,today);
+ }catch{
+   if(mcpScan===controller)mcpStatus.textContent='The photo could not be read. Try a smaller, clearer photo or choose Enter dates manually below.';
+ }finally{
+   clearTimeout(timeout);
+   if(mcpScan===controller){mcpScan=null;scanMcpPhoto.disabled=!mcpPreviewUrl;}
+ }
+});
 $('#saveHistory').addEventListener('click',async()=>{
+ const dob=historyDOB;
+ if(!dob||dob!==dobInput.value)return;
  const inputs=[...document.querySelectorAll('[data-history-id]')];
+ if(!$('#cardDateReview').hidden&&!$('#confirmCardDates').checked){$('#historyError').textContent='Confirm the photo-suggested dates below the history list, or clear the dates you cannot verify.';return;}
  if(inputs.some(i=>i.value&&(i.value<i.min||i.value>i.max))){$('#historyError').textContent='Each date must be between the date of birth and today.';return;}
- const rec=loadRecord(dobInput.value);
+ const rec=loadRecord(dob);
  const checks=[...document.querySelectorAll('[data-missed-id]')];
  if(inputs.some(i=>i.value&&checks.find(c=>c.dataset.missedId===i.dataset.historyId)?.checked)){ $('#historyError').textContent='For each dose, enter a given date OR mark it missed, not both.';return; }
  rec._missed={...(rec._missed||{})};
@@ -657,7 +865,9 @@ $('#saveHistory').addEventListener('click',async()=>{
    else if(checked){delete rec[i.dataset.historyId];rec._missed[i.dataset.historyId]=true;}
    else delete rec._missed[i.dataset.historyId];
  });
- try { await saveRecord(dobInput.value,rec);$('#historyModal').classList.remove('open');render(); } catch(e){$('#historyError').textContent='Could not save. Check browser storage and try again.';}
+ const save=$('#saveHistory');save.disabled=true;
+ try { await saveRecord(dob,rec);if(historyDOB===dob)closeHistory();render(); } catch(e){$('#historyError').textContent='Could not save. Check browser storage and try again.';}
+ finally { save.disabled=false; }
 });
 
 // modal
@@ -702,7 +912,7 @@ $('#clearGiven').addEventListener('click',async()=>{
 });
 
 // Do not silently reopen another child's health record on a shared device.
-[dobInput,$('#childGender')].forEach(el=>el.addEventListener('input',()=>{currentDOB=null;$('#summaryBox').style.display='none';$('#scheduleSection').style.display='none';}));
+[dobInput,$('#childGender')].forEach(el=>el.addEventListener('input',()=>{currentDOB=null;closeHistory();$('#summaryBox').style.display='none';$('#scheduleSection').style.display='none';}));
 initializeStorage();
 </script>
 </body>
